@@ -36,7 +36,10 @@ empresa y por línea de comandos permita la visualización de la siguiente infor
  
  
  Procesador_inventario.exe [Argumentos] inventariofisico.csv
-**Argumentos posibles:**
+***Argumentos posibles:***
+
+
+
 - -total_art_dif Cantidad total de artículos diferentes.
 - -total_art Cantidad total de artículos.
 2

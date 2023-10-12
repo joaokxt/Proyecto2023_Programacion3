@@ -36,6 +36,9 @@ empresa y por línea de comandos permita la visualización de la siguiente infor
  
  
  Procesador_inventario.exe [Argumentos] inventariofisico.csv
+
+
+ 
 ***Argumentos posibles:***
 
 

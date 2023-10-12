@@ -67,4 +67,6 @@ Forma de evaluación: Se evaluara de acuerdo a los siguientes parámetros:
 * Conocimiento de la estructura realizada.
 * Exposición y defensa del trabajo.
 * Preguntas sobre las estructuras utilizadas a cada integrante.
-Cada grupo tendrá 15 minutos para presentar lo desarrollado el día de la entrega.
+
+
+**Cada grupo tendrá 15 minutos para presentar lo desarrollado el día de la entrega.**

@@ -7,7 +7,8 @@ Una empresa Argentina realiza diariamente el Inventario Físico de una gran dive
 diferentes códigos de QR y en diferentes depósitos. El software de escaneo que se usa en el inventariado físico,
 lamentablemente, es muy elemental y arroja una tabla de Excel de infinidad de filas que resultan humanamente
 ilegibles y difíciles de procesar para obtener información útil a la empresa:
-*Área de Compras: no detecta a tiempo cuales artículos alcanzan el mínimo por el cuál tomar la decisión de
+
+* Area de Compras: no detecta a tiempo cuales artículos alcanzan el mínimo por el cuál tomar la decisión de
 reponerlos.
 * El área de ventas, se encuentra con la dificultad de no poder atender rápidamente a los clientes al no saber
 la existencia o no de determinado artículo, al momento de consulta de la información.
@@ -23,13 +24,15 @@ empresa y por línea de comandos permita la visualización de la siguiente infor
 *Listado de artículos que están en el mínimo de stock.
 *Listado de artículos que están en el mínimo de stock y por depósito.
 *Stock individual de cada artículo.
-* Stock individual de cada artículo según depósito.
+  Stock individual de cada artículo según depósito.
 *Los artículos que igualan o superen determinada cantidad en stock
-Consideraciones del archivo CSV:
+
+**Consideraciones del archivo CSV:**
+  
 *La cantidad de depósitos puede variar.
 *La cantidad de artículos diferentes puede variar.
-Manual de Uso:
-Uso normal:
+### Manual de Uso:
+**Uso normal:**
 Procesador_inventario.exe [Argumentos] inventariofisico.csv
 Argumentos posibles:
 -total_art_dif Cantidad total de artículos diferentes.
@@ -40,7 +43,7 @@ Argumentos posibles:
 -stock [nombre_articulo] El stock total del artículo ingresado como argumento.
 -stock [nombre_articulo],[depósito] El stock del artículo en un depósito.
 -max_Stock [n] Listado de aquellos artículos cuyo stock es igual o supera el número n.
-Objetivo: Ejercitar y afianzar el uso de estructuras y algoritmos de datos mediante una aplicación concisa y de uso
+**Objetivo:** Ejercitar y afianzar el uso de estructuras y algoritmos de datos mediante una aplicación concisa y de uso
 general.
 Formas de presentación: Exposición y defensa del programa e informe con código fuente y comentarios. Los
 integrantes del grupo deben conocer, exponer y defender por igual cualquier parte del

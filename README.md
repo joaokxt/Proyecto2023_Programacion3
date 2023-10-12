@@ -1,4 +1,4 @@
-# ProyectoFinal_Programacion3
+<p style="text-align: center;"># ProyectoFinal_Programacion3</p>
 
 # PROGRAMACIÓN III
 ## PARCIAL 2

@@ -2,6 +2,7 @@
 #define U05_ARBOL_ARBOL_NODOARBOL_H_
 
 #include <string.h>
+#include <iostream>
 using namespace std;
 
 template <class T>

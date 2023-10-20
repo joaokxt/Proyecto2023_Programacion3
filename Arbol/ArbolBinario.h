@@ -1,7 +1,10 @@
 #ifndef U05_ARBOL_ARBOL_ARBOLBINARIO_H_
 #define U05_ARBOL_ARBOL_ARBOLBINARIO_H_
 
+#include <iostream>
 #include "NodoArbol.h"
+#include "../Cola/Cola.h"
+using namespace std;
 
 template <class T>
 class ArbolBinario
@@ -30,6 +33,10 @@ public:
 
   void print();
 
+  int contarPorNivel(int nivel);
+
+  void espejo();
+
 private:
   T search(T data, NodoArbol<T> *r);
   NodoArbol<T> *put(T data, NodoArbol<T> *r);
@@ -38,6 +45,7 @@ private:
   void preorder(NodoArbol<T> *r);
   void inorder(NodoArbol<T> *r);
   void postorder(NodoArbol<T> *r);
+  void espejoProceso(NodoArbol<T> *r);
 };
 
 /**
@@ -100,6 +108,7 @@ void ArbolBinario<T>::put(T data) { root = put(data, root); }
 template <class T>
 NodoArbol<T> *ArbolBinario<T>::put(T data, NodoArbol<T> *r)
 {
+  //para cada nodo su padre es la raíz.
   if (r == nullptr)
   {
     return new NodoArbol<T>(data);
@@ -209,7 +218,7 @@ NodoArbol<T> *ArbolBinario<T>::findMaxAndRemove(NodoArbol<T> *r, bool *found)
   ret = findMaxAndRemove(r->getRight(), found);
   if (*found)
   {
-    r->setRight(ret);
+    r->setRight(nullptr);
     *found = false;
   }
 
@@ -300,6 +309,67 @@ void ArbolBinario<T>::print()
 {
   if (root != NULL)
     root->print(false, "");
+}
+
+template <class T>
+int ArbolBinario<T>::contarPorNivel(int nivel){
+  NodoArbol<T>* aux = root;
+  Cola<NodoArbol<T>*> colaNodos;
+  Cola<int> colaNiveles;
+  int nivelActual = 1, cantNodos = 0;
+
+  colaNodos.encolar(aux);
+  colaNiveles.encolar(nivelActual);
+
+  while(nivelActual <= nivel){
+    aux = colaNodos.desencolar();
+    nivelActual = colaNiveles.desencolar();
+
+    if(nivelActual == nivel){
+      cantNodos++;
+    }
+    if(aux->getLeft() != nullptr){
+      colaNodos.encolar(aux->getLeft());
+      colaNiveles.encolar(nivelActual+1);
+    }
+    if(aux->getRight() != nullptr){
+      colaNodos.encolar(aux->getRight());
+      colaNiveles.encolar(nivelActual+1);
+    }
+  }
+
+  return cantNodos;
+}
+
+template <class T>
+void ArbolBinario<T>::espejo(){
+  NodoArbol<T> *aux;
+
+  espejoProceso(root->getLeft());
+  espejoProceso(root->getRight());
+
+  aux = root->getLeft();
+  root->setLeft(root->getRight());
+  root->setRight(aux);
+
+  return;
+}
+
+template <class T>
+void ArbolBinario<T>::espejoProceso(NodoArbol<T> *r){
+  NodoArbol<T> *aux;
+
+  if(r == nullptr){
+    return;
+  }
+
+  aux = r->getLeft();
+  r->setLeft(r->getRight());
+  r->setRight(aux);
+
+  espejoProceso(r->getLeft());
+  espejoProceso(r->getRight());
+
 }
 
 #endif // U05_ARBOL_ARBOL_ARBOLBINARIO_H_

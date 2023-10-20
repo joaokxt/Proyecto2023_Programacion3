@@ -4,65 +4,116 @@
 #include <string>
 #include <sstream>
 
+#include "HashMap/HashMap.h"
+#include "HashMap/HashLista.h"
+#include "HashMap/HashEntry.h"
+#include "Lista/Lista.h"
+#include "Arbol/ArbolBinario.h"
+
 using namespace std;
 
-int main() {
-    clock_t begin;
+int i, cantArticulosDiferentes = 0, cantArticulos = 0;
 
-    cout << "Comenzando a medir Tiempo\n" << endl;
+struct Articulo{
+    std::string grupo;
+    std::string codigo;
+    std::string nombreArticulo;
+    int *deposito;
+    int total;
+};
 
-    begin = clock();
-    
-    std::ifstream archivoCSV("Inventariado Fisico.csv");
+template <class T>
+struct Contenedor{
+    T data;
+    string codigo;
+};
 
-    const int buffer_size = 4096;  // Tamaño del búfer (ajusta según tus necesidades)
-    char buffer[buffer_size];
+ArbolBinario<Contenedor<int>*> *arbolTotales = new ArbolBinario<Contenedor<int>*>();
+HashMapL<string, Articulo*> *mapaArticulos = new HashMapL<string, Articulo*>(1024);
+HashMapL<int, ArbolBinario<Contenedor<int>*>*> *mapaDepositos;
 
-    archivoCSV.getline(buffer, buffer_size);  // Lee una línea del archivo en el búfer
 
-    std::stringstream ss(buffer);
-    std::string columna;
+int contarColumnasCSV(){
+    ifstream archivoCSV("Inventariado Fisico.csv");
+
+    const int bufferSize = 4096;  
+    char buffer[bufferSize];
+
+    archivoCSV.getline(buffer, bufferSize); 
+
+    stringstream ss(buffer);
+    string columna;
     int contadorColumnas = 0;
 
-    while (std::getline(ss, columna, ',')) {
+    while (getline(ss, columna, ',')) {
         contadorColumnas++;
     }
 
-    std::cout << "El archivo CSV tiene " << contadorColumnas << " columnas." << std::endl;
+    archivoCSV.close();
+    return contadorColumnas;
+}
 
-    char seprador = ',';
-    string linea;
-    getline(archivoCSV,linea);
-
-    cout<<linea<<endl;
+int main() {
+    clock_t begin;
+    cout << "Comenzando a medir Tiempo\n" << endl;
+    begin = clock();
     
-    contadorColumnas -= 3;
-    string* d = new string[contadorColumnas];
+    ifstream archivoCSV("Inventariado Fisico.csv");
 
+    int total, cantDepositos = contarColumnasCSV() - 3, *deposito = new int[cantDepositos];
+    char separador = ',';
+    string grupo, codigo, articulo, linea, *d = new string[cantDepositos];
+    mapaDepositos = new HashMapL<int, ArbolBinario<Contenedor<int>*>*>(cantDepositos);
+
+    for(i=0; i<cantDepositos; i++){
+        ArbolBinario<Contenedor<int>*>* arbol = new ArbolBinario<Contenedor<int>*>();
+        mapaDepositos->put(i, arbol);
+    }
+    
+    
+    getline(archivoCSV,linea);
     while(getline(archivoCSV,linea)){
+        struct Articulo *articuloActual = new Articulo;
+        struct Contenedor<int> *contenedorTotal = new Contenedor<int>;
+        struct Contenedor<int> *contenedorDeposito = new Contenedor<int>;
         stringstream stream(linea);
-        string grupo,codigo,articulo;
+        total = 0;
 
-        getline(stream,grupo,seprador);
-        getline(stream,codigo,seprador);
-        getline(stream,articulo,seprador);
-        cout<<"================"<<endl;
-        cout<<"Grupo: "<<grupo<<endl;
-        cout<<"Codigo: "<<codigo<<endl;
-        cout<<"Articulo: "<<articulo<<endl;
-        
-        for(int i=0; i<contadorColumnas; i++){
-            getline(stream, d[i], seprador);
-            cout<<"Deposito "<<i+1<<": "<<d[i]<<endl;
+        getline(stream,grupo,separador);
+        getline(stream,codigo,separador);
+        getline(stream,articulo,separador);
+        for(i=0; i<cantDepositos; i++){
+            getline(stream, d[i], separador);
+            deposito[i] = stoi(d[i]);
+            total += deposito[i];
         }
 
+        articuloActual->grupo = grupo;
+        articuloActual->codigo = codigo;
+        articuloActual->nombreArticulo = articulo;
+        articuloActual->deposito = deposito;
+        articuloActual->total = total;
+
+        contenedorTotal->data = total;
+        contenedorTotal->codigo = codigo;
+
+        for(i=0; i<cantDepositos; i++){
+            contenedorDeposito->data = deposito[i];
+            contenedorDeposito->codigo = codigo;
+            mapaDepositos->get(i)->put(contenedorDeposito);
+        }
+
+        mapaArticulos->put(articulo, articuloActual);
+        arbolTotales->put(contenedorTotal);
+
+        cantArticulos += total;
+        cantArticulosDiferentes ++;
     } 
+
     archivoCSV.close();
     
     clock_t end = clock();
-
     double elapsed_secs = static_cast<double>(end - begin) / CLOCKS_PER_SEC;
-
     cout << "Tardo elapsed_secs" << elapsed_secs << "\n" << std::endl;
 }
 

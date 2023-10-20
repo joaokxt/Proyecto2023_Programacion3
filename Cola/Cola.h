@@ -1,42 +1,33 @@
-#ifndef U04_COLAS_COLA_COLA_H_
-#define U04_COLAS_COLA_COLA_H_
-
-#include "nodo.h"
+#ifndef COLA_COLA_H_
+#define COLA_COLA_H_
+#include "Nodo.h"
+#include <iostream>
 
 /**
  * Clase que implementa una Cola generica, ya que puede
  * almacenar cualquier tipo de dato T
  * @tparam T cualquier tipo de dato
  */
-template <class T>
-class Cola
-{
+template <class T> class Cola {
 private:
-  Nodo<T> *tope, *fondo;
-
+  Nodo<T> *frente;
 public:
   Cola();
-
   ~Cola();
-
   void encolar(T dato);
-
+  void encolarPrioridad(T dato, int prioridad);
   T desencolar();
-
+  int getTamanio();
   bool esVacia();
-
-  T peek();
+  void print();
 };
 
 /**
  * Constructor de la clase Cola
  * @tparam T
  */
-template <class T>
-Cola<T>::Cola()
-{
-  tope = nullptr;
-  fondo = nullptr;
+template <class T> Cola<T>::Cola(){
+  frente = nullptr;
 }
 
 /**
@@ -44,16 +35,8 @@ Cola<T>::Cola()
  * nodos utilizados en la Cola
  * @tparam T
  */
-template <class T>
-Cola<T>::~Cola()
-{
-  while (!esVacia())
-  {
-    desencolar();
-  }
-
-  delete tope;
-  delete fondo;
+template <class T> Cola<T>::~Cola(){
+  delete frente;
 }
 
 /**
@@ -61,23 +44,44 @@ Cola<T>::~Cola()
  * @tparam T
  * @param dato  dato a insertar
  */
-template <class T>
-void Cola<T>::encolar(T dato)
-{
-  Nodo<T> *nuevo = new Nodo<T>();
+template <class T> void Cola<T>::encolar(T dato){
+  Nodo<T> *aux, *nuevo = new Nodo<T>();
+
   nuevo->setDato(dato);
   nuevo->setSiguiente(nullptr);
+  nuevo->setPrioridad(1000);
 
-  if (esVacia())
-  {
-    tope = nuevo;
+  if(this->esVacia()){
+    frente = nuevo;
+  }else{
+    aux = frente;
+    while(aux->getSiguiente() != nullptr){ 
+      aux = aux->getSiguiente();
+    }
+    aux->setSiguiente(nuevo);
   }
-  else
-  {
-    fondo->setSiguiente(nuevo);
-  }
+}
 
-  fondo = nuevo;
+template <class T> void Cola<T>::encolarPrioridad(T dato, int prioridad){
+  Nodo<T> *aux, *nuevo = new Nodo<T>();
+
+  nuevo->setDato(dato);
+  nuevo->setSiguiente(nullptr);
+  nuevo->setPrioridad(prioridad);
+
+  if(this->esVacia()){
+    frente = nuevo;
+  }else if(frente->getPrioridad()>nuevo->getPrioridad()){
+    nuevo->setSiguiente(frente);
+    frente = nuevo;
+  }else{
+    aux = frente;
+    while(aux->getSiguiente() != nullptr && aux->getSiguiente()->getPrioridad()<=nuevo->getPrioridad()){ 
+      aux = aux->getSiguiente();
+    }
+    nuevo->setSiguiente(aux->getSiguiente());
+    aux->setSiguiente(nuevo);
+  }
 }
 
 /**
@@ -85,25 +89,37 @@ void Cola<T>::encolar(T dato)
  * @tparam T
  * @return dato almacenado en el nodo
  */
-template <class T>
-T Cola<T>::desencolar()
-{
-  if (esVacia())
-  {
-    throw 400;
+template <class T> T Cola<T>::desencolar(){
+  Nodo<T>* aBorrar;
+  T dato;
+
+  if(this->esVacia()){
+    throw 404;
   }
 
-  T dato = tope->getDato();
-  Nodo<T> *aBorrar = tope;
-  tope = tope->getSiguiente();
-
-  if (tope == nullptr)
-  {
-    fondo = nullptr;
-  }
+  aBorrar = frente;
+  dato = aBorrar->getDato();
+  frente = aBorrar->getSiguiente();
 
   delete aBorrar;
   return dato;
+}
+
+template <class T> int Cola<T>::getTamanio(){
+  Nodo<T>* aux = new Nodo<T>();
+  int tamanio = 0;
+
+  if(esVacia()){
+    return tamanio;
+  }
+
+  aux = frente;
+  while(aux != nullptr){
+    tamanio++;
+    aux = aux->getSiguiente();
+  }
+
+  return tamanio;
 }
 
 /**
@@ -111,26 +127,18 @@ T Cola<T>::desencolar()
  * @tparam T
  * @return
  */
-template <class T>
-bool Cola<T>::esVacia()
-{
-  return fondo == nullptr;
+template <class T> bool Cola<T>::esVacia(){
+  return frente == nullptr;
 }
 
-/**
- * Obtener el dato de la Cola sin eliminar el nodo
- * @tparam T
- * @return dato almacenado en el nodo
- */
-template <class T>
-T Cola<T>::peek()
-{
-  if (esVacia())
-  {
-    throw 400;
-  }
+template <class T> void Cola<T>::print(){
+  Nodo<T>* aux = frente;
 
-  return tope->getDato();
+  while(aux != nullptr){
+    std::cout<<aux->getDato()<<"->";
+    aux = aux->getSiguiente();
+  }
+  std::cout<<"FINAL"<<std::endl;
 }
 
 #endif // U04_COLAS_COLA_COLA_H_

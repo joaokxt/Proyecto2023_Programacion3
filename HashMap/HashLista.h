@@ -1,111 +1,105 @@
 #ifndef HASHMAP_HASHLISTA_H_
 #define HASHMAP_HASHLISTA_H_
-using namespace std;
-#include "HashEntry.h"
+
 #include <iostream>
 #include "../Lista/Lista.h"
-
+#include "HashEntry.h"
+using namespace std;
 
 template <class K, class T>
 class HashMapL
 {
 private:
-    Lista<HashEntry<K, T>> **tabla;
+  Lista<HashEntry<K, T>> **tabla;
+  unsigned int tamanio;
 
-    unsigned int tamanio;
+  static unsigned int hashFunc(K clave);
 
-    static unsigned int hashFunc(K clave);
-
-    unsigned int (*hashFuncP)(K clave);
+  unsigned int (*hashFuncP)(K clave);
 
 public:
-    explicit HashMapL(unsigned int k);
+  explicit HashMapL(unsigned int k);
 
-    HashMapL(unsigned int k, unsigned int (*hashFuncP)(K clave));
+  HashMapL(unsigned int k, unsigned int (*hashFuncP)(K clave));
 
-    T get(K clave);
+  T get(K clave);
 
-    void put(K clave, T valor);
+  void put(K clave, T valor);
 
-    void remove(K clave);
+  void remove(K clave);
 
-    ~HashMapL();
+  ~HashMapL();
 
-    bool esVacio();
+  bool esVacio();
 
-    void print1();
-
-    void print2(K clave);
-
-    void print3();
+  void print();
 };
 
 template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k)
 {
-    tamanio = k;
-    tabla = new Lista<HashEntry<K, T>> *[tamanio];
-    for (int i = 0; i < tamanio; i++)
-    {
-        tabla[i] = NULL;
-    }
-    hashFuncP = hashFunc;
+  tamanio = k;
+  tabla = new HashEntry<K, Lista<T>> *[tamanio];
+  for (int i = 0; i < tamanio; i++)
+  {
+    tabla[i] = NULL;
+  }
+  hashFuncP = hashFunc;
 }
 
 template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K))
 {
-    tamanio = k;
-    tabla = new Lista<HashEntry<K, T>> *[tamanio];
-    for (int i = 0; i < tamanio; i++)
-    {
-        tabla[i] = NULL;
-    }
-    hashFuncP = fp;
+  tamanio = k;
+  tabla = new HashEntry<K, Lista<T>> *[tamanio];
+  for (int i = 0; i < tamanio; i++)
+  {
+    tabla[i] = NULL;
+  }
+  hashFuncP = fp;
 }
 
 template <class K, class T>
 HashMapL<K, T>::~HashMapL()
 {
-    for (int i = 0; i < tamanio; i++)
+  for (int i = 0; i < tamanio; i++)
+  {
+    if (tabla[i] != NULL)
     {
-        if (tabla[i] != NULL)
-        {
-            delete tabla[i];
-        }
+      delete tabla[i];
     }
+  }
 }
 
 template <class K, class T>
 T HashMapL<K, T>::get(K clave)
 {
-    unsigned int pos = hashFuncP(clave) % tamanio;
-    if (tabla[pos] == NULL)
-    {
-        throw 404;
-    }
-    if(tabla[pos]->getClave() == clave){
-        return tabla[pos]->getValor();
-    }else{
-        throw 409;
-    }
+  unsigned int pos = hashFuncP(clave) % tamanio;
+  if (tabla[pos] == NULL)
+  {
+    throw 404;
+  }
+  for(int i=0; i<tabla[pos]->getTamanio(); i++){
+    HashEntry<K,T> entrada = tabla[pos]->getDato(i);
+    if(entrada->getClave() == clave)
+      return entrada->getValor();
+  }
 }
 
+template <class K, class T>
+void HashMapL<K, T>::put(K clave, T valor)
+{
+  unsigned int pos = hashFuncP(clave) % tamanio;
+  HashEntry<K,T> *dato = new HashEntry<K, T>(clave, valor);
 
+  if (tabla[pos] == NULL)
+  {
+    tabla[pos] = new Lista<HashEntry<K, T>>;
+  }
 
-template<class K, class T>
-void HashMapL<K,T>::put(K clave, T valor) {
-    unsigned int pos = hashFuncP(clave) % tamanio;
-
-    if (tabla[pos] == NULL)
-    {
-        //Manejar la Colision!!!!!!!
-        tabla[pos] = new Lista<HashEntry<K, T>>();
-    }
-
-    tabla[pos]->insertarUltimo(HashEntry<K, T>(clave,valor)); //Corresponde a una fila en la tabla HASH
+  tabla[pos]->insertarUltimo(dato);
+  return;
 }
-
 
 template <class K, class T>
 void HashMapL<K, T>::remove(K clave) {}
@@ -113,84 +107,42 @@ void HashMapL<K, T>::remove(K clave) {}
 template <class K, class T>
 bool HashMapL<K, T>::esVacio()
 {
-    for (int i = 0; i < tamanio; i++)
+  for (int i = 0; i < tamanio; i++)
+  {
+    if (tabla[i] != NULL)
     {
-        if (tabla[i] != NULL)
-        {
-            return false;
-        }
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 template <class K, class T>
 unsigned int HashMapL<K, T>::hashFunc(K clave)
 {
-    return (unsigned int)clave;
+  return (unsigned int)clave;
 }
 
 template <class K, class T>
-void HashMapL<K, T>::print1()
+void HashMapL<K, T>::print()
 {
 
-    std::cout << "i"
-              << " "
-              << "Clave"
-              << "\t\t"
-              << "Valor" << std::endl;
-    std::cout << "--------------------" << std::endl;
-    for (int i = 0; i < tamanio; i++)
+  std::cout << "i"
+            << " "
+            << "Clave"
+            << "\t\t"
+            << "Valor" << std::endl;
+  std::cout << "--------------------" << std::endl;
+  for (int i = 0; i < tamanio; i++)
+  {
+    std::cout << i << " ";
+    if (tabla[i] != NULL)
     {
-        std::cout << i << " ";
-        if (tabla[i] != NULL)
-        {
-            std::cout << tabla[i]->getClave() << "\t\t";
-            std::cout << tabla[i]->getValor();
-        }
-        std::cout << std::endl;
+      std::cout << tabla[i]->getClave() << "\t\t";
+      std::cout << tabla[i]->getValor();
     }
-}
-
-template <class K, class T>
-void HashMapL<K, T>::print3()
-{
-    //unsigned int pos = hashFuncP(clave) % tamanio;
-    Nodo<HashEntry<K, T>> *aux = tabla[0]->getInicio();
-    std::cout << "i"
-              << " "
-              << "Clave"
-              << "\t\t"
-              << "Valor" << std::endl;
-    std::cout << "--------------------" << std::endl;
-    for (int i = 1; i < tamanio; i++)
-    {
-        std::cout << i << " ";
-
-        while (aux != NULL) {
-            cout<<aux->getDato().getClave()<<endl;
-            cout<<aux->getDato().getValor()<<endl;
-            aux = aux->getSiguiente();
-        }
-
-        std::cout << std::endl;
-    }
-}
-
-
-template <class K, class T>
-void HashMapL<K, T>::print2(K clave)
-{
-    unsigned int pos = hashFuncP(clave) % tamanio;
-
-    if(tabla[pos] == NULL){
-        throw 404;
-    }
-    Nodo<HashEntry<K, T>> *aux = tabla[pos]->getInicio();
-
-    while (aux != NULL) {
-        cout<<aux->getDato().getValor()<<endl;
-        aux = aux->getSiguiente();
-    }
+    std::cout << std::endl;
+  }
 }
 
 #endif // U05_HASH_HASHMAP_HASHMAP_H_

@@ -8,7 +8,6 @@
 #include "HashMap/HashLista.h"
 #include "HashMap/HashEntry.h"
 #include "Lista/Lista.h"
-#include "Lista/nodo.h"
 #include "Arbol/ArbolBinario.h"
 
 using namespace std;
@@ -37,10 +36,10 @@ HashMapL<int, ArbolBinario<Contenedor<int>*>*> *mapaDepositos;
 int contarColumnasCSV(){
     ifstream archivoCSV("Inventariado Fisico.csv");
 
-    const int buffer_size = 4096;  // Tamaño del búfer (ajusta según tus necesidades)
-    char buffer[buffer_size];
+    const int bufferSize = 4096;  
+    char buffer[bufferSize];
 
-    archivoCSV.getline(buffer, buffer_size);  // Lee una línea del archivo en el búfer
+    archivoCSV.getline(buffer, bufferSize); 
 
     stringstream ss(buffer);
     string columna;
@@ -109,8 +108,6 @@ int main() {
 
         cantArticulos += total;
         cantArticulosDiferentes ++;
-
-
     } 
 
     archivoCSV.close();

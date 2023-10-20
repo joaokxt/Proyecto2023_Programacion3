@@ -1,7 +1,9 @@
 #ifndef U05_HASH_HASHMAP_HASHMAP_H_
 #define U05_HASH_HASHMAP_HASHMAP_H_
 
+#include <iostream>
 #include "HashEntry.h"
+using namespace std;
 
 template <class K, class T>
 class HashMap

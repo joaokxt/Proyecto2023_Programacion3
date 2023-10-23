@@ -1,7 +1,7 @@
 #ifndef U02_LISTAS_LISTA_LISTA_H_
 #define U02_LISTAS_LISTA_LISTA_H_
-#include "Pila.h"
-#include "../Lista/nodo.h"
+#include "nodo.h"
+#include "../Pila/Pila.h"
 #include <iostream>
 
 /**
@@ -15,6 +15,8 @@ private:
 
 public:
   Lista();
+
+  Lista(T datoIncial);
 
   Lista(const Lista<T> &li);
 
@@ -56,6 +58,11 @@ public:
  * @tparam T
  */
 template <class T> Lista<T>::Lista() { inicio = nullptr; }
+
+template <class T> Lista<T>::Lista(T datoInicial) {
+  inicio = new Nodo<T>();
+  inicio->setDato(datoInicial);
+}
 
 /**
  * Constructor por copia de la clase Lista

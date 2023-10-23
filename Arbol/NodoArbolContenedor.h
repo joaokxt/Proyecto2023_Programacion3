@@ -9,48 +9,54 @@ template <class T>
 class NodoArbolContenedor
 {
 private:
-  T data;
-  NodoArbol *left, *right;
+  Pila<Contenedor<T>> *pila;
+  NodoArbolContenedor *left, *right;
 
 public:
-  NodoArbol()
+  NodoArbolContenedor()
   {
     left = nullptr;
     right = nullptr;
   }
 
-  NodoArbol(T d)
+  NodoArbolContenedor(Contenedor<T> data)
   {
-    data = d;
+    pila = new Pila();
+    pila.push(data);
     left = nullptr;
     right = nullptr;
   }
 
-  T getData() const
+  Pila<T> getPila() const
   {
-    return data;
+    return pila;
   }
 
-  void setData(T d)
+  void addData(Contenedor<T> data)
   {
-    this->data = d;
+    pila.push(data);
   }
 
-  NodoArbol *getRight() const
+  void setPila(Pila<Contenedor<T>> p)
+  {
+    this->pila = p;
+  }
+
+  NodoArbolContenedor *getRight() const
   {
     return right;
   }
 
-  void setRight(NodoArbol *r)
+  void setRight(NodoArbolContenedor *r)
   {
     this->right = r;
   }
-  NodoArbol *getLeft() const
+  NodoArbolContenedor *getLeft() const
   {
     return left;
   }
 
-  void setLeft(NodoArbol *l)
+  void setLeft(NodoArbolContenedor *l)
   {
     this->left = l;
   }
@@ -66,7 +72,7 @@ public:
         cout << " \\";
     }
     cout << "-- ";
-    cout << data << endl;
+    pila->print();
     if (left != NULL) {
         left->print(false, identacion + (esDerecho ? "|    " : "     "));
     }

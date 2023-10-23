@@ -15,7 +15,9 @@ protected:
 public:
   ArbolBinarioContenedor();
 
-  void put(T data);
+  ArbolBinarioContenedor(T data, string codigo);
+
+  void put(T data, string codigo);
 
   T search(T data);
 
@@ -38,14 +40,11 @@ public:
   void espejo();
 
 private:
-  T search(T data, NodoArbol<T> *r);
-  NodoArbolContenedor<T> *put(T data, NodoArbolContenedor<T> *r);
-  NodoArbolContenedor<T> *remove(T data, NodoArbolContenedor<T> *r);
-  NodoArbolContenedor<T> *findMaxAndRemove(NodoArbolContenedor<T> *r, bool *found);
+  T search(T data, NodoArbolContenedor<T> *r);
+  NodoArbolContenedor<T> *put(T data, string codigo, NodoArbolContenedor<T> *r);
   void preorder(NodoArbolContenedor<T> *r);
   void inorder(NodoArbolContenedor<T> *r);
   void postorder(NodoArbolContenedor<T> *r);
-  void espejoProceso(NodoArbolContenedor<T> *r);
 };
 
 /**
@@ -55,6 +54,14 @@ private:
  */
 template <class T>
 ArbolBinarioContenedor<T>::ArbolBinarioContenedor() { root = nullptr; }
+
+template <class T>
+ArbolBinarioContenedor<T>::ArbolBinarioContenedor(T data, string codigo) {
+  Contenedor<T> contenedorAux;
+  contenedorAux.info = data;
+  contenedorAux.codigo = codigo
+  root = new NodoArbolContenedor(contenedorAux); 
+}
 
 /**
  * Destructor del Arbol
@@ -75,19 +82,19 @@ T ArbolBinarioContenedor<T>::search(T data)
 }
 
 template <class T>
-T ArbolBinarioContenedor<T>::search(T data, NodoArbol<T> *r)
+T ArbolBinarioContenedor<T>::search(T data, NodoArbolContenedor<T> *r)
 {
   if (r == nullptr)
   {
     throw 404;
   }
 
-  if (r->getData() == data)
+  if (r->getData()->peek().info == data)
   {
     return r->getData();
   }
 
-  if (r->getData() > data)
+  if (r->getData()->peek().info > data)
   {
     return search(data, r->getLeft());
   }
@@ -103,147 +110,65 @@ T ArbolBinarioContenedor<T>::search(T data, NodoArbol<T> *r)
  * @param dato Dato a agregar
  */
 template <class T>
-void ArbolBinarioContenedor<T>::put(T data) { root = put(data, root); }
+void ArbolBinarioContenedor<T>::put(T data, string codigo) { 
+  root = put(data, string, root); 
+}
 
 template <class T>
-NodoArbol<T> *ArbolBinarioContenedor<T>::put(T data, NodoArbol<T> *r)
+NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, string codigo, NodoArbolContenedor<T> *r)
 {
-  //para cada nodo su padre es la raíz.
+  Contenedor<T> *contenedorAux;
+
   if (r == nullptr)
   {
-    return new NodoArbol<T>(data);
+    contenedorAux = new Contenedor<T>;
+    contenedorAux.info = data;
+    contenedorAux.codigo = codigo;
+
+    return new NodoArbolContenedor<T>(contenedorAux);
   }
 
-  if (r->getData() == data)
+  if (r->getPila()->peek().info == data.info)
   {
-    throw 200;
+    contenedorAux = new Contenedor<T>;
+    contenedorAux.info = data;
+    contenedorAux.codigo = codigo;
+
+    r->addData(contenedorAux);
   }
 
-  if (r->getData() > data)
+  if (r->getData()->peek().info > data.info)
   {
-    r->setLeft(put(data, r->getLeft()));
+    r->setLeft(put(data, codigo, r->getLeft()));
   }
   else
   {
-    r->setRight(put(data, r->getRight()));
+    r->setRight(put(data, codigo, r->getRight()));
   }
 
   return r;
 }
 
-/**
- * Elimina un dato del árbol
- * @param clave Clave para identificar el nodo a borrar
- */
-template <class T>
-void ArbolBinario<T>::remove(T data)
-{
-  root = remove(data, root);
-}
-
-template <class T>
-NodoArbol<T> *ArbolBinario<T>::remove(T data, NodoArbol<T> *r)
-{
-  NodoArbol<T> *aux;
-
-  if (r == nullptr)
-  {
-    throw 404;
-  }
-
-  if (r->getData() == data)
-  {
-
-    if (r->getLeft() == nullptr && r->getRight() == nullptr)
-    {
-      delete r;
-      return nullptr;
-    }
-    else if (r->getLeft() != nullptr && r->getRight() == nullptr)
-    {
-      aux = r->getLeft();
-      delete r;
-      return aux;
-    }
-    else if (r->getLeft() == nullptr && r->getRight() != nullptr)
-    {
-      aux = r->getRight();
-      delete r;
-      return aux;
-    }
-    else if (r->getLeft() != nullptr && r->getRight() != nullptr)
-    {
-
-      if (r->getLeft()->getRight() != nullptr)
-      {
-        // Aca tenemos que buscar el valor maximo
-        bool found;
-        aux = findMaxAndRemove(r->getLeft(), &found);
-        aux->setRight(r->getRight());
-        aux->setLeft(r->getLeft());
-      }
-      else
-      {
-        aux = r->getLeft();
-        r->getLeft()->setRight(r->getRight());
-      }
-      delete r;
-      return aux;
-    }
-  }
-  else if (r->getData() > data)
-  {
-    r->setLeft(remove(data, r->getLeft()));
-  }
-  else
-  {
-    r->setRight(remove(data, r->getRight()));
-  }
-
-  return r;
-}
-
-template <class T>
-NodoArbol<T> *ArbolBinario<T>::findMaxAndRemove(NodoArbol<T> *r, bool *found)
-{
-  NodoArbol<T> ret;
-  *found = false;
-
-  if (r->getRight() == nullptr)
-  {
-    *found = true;
-    return r;
-  }
-
-  ret = findMaxAndRemove(r->getRight(), found);
-  if (*found)
-  {
-    r->setRight(nullptr);
-    *found = false;
-  }
-
-  return ret;
-}
 
 /**
  * Informa si un árbol esta vacío
  * @return
  */
 template <class T>
-bool ArbolBinario<T>::esVacio() { return root == nullptr; }
+bool ArbolBinarioContenedor<T>::esVacio() { return root == nullptr; }
 
 /**
  * Recorre un árbol en preorden
  */
 template <class T>
-void ArbolBinario<T>::preorder()
+void ArbolBinarioContenedor<T>::preorder()
 {
   preorder(root);
   std::cout << std::endl;
 }
 
 template <class T>
-void ArbolBinario<T>::preorder(NodoArbol<T> *r)
+void ArbolBinarioContenedor<T>::preorder(NodoArbolContenedor<T> *r)
 {
   if (r == nullptr)
   {
@@ -259,14 +184,14 @@ void ArbolBinario<T>::preorder(NodoArbol<T> *r)
  * Recorre un árbol en orden
  */
 template <class T>
-void ArbolBinario<T>::inorder()
+void ArbolBinarioContenedor<T>::inorder()
 {
   inorder(root);
   std::cout << std::endl;
 }
 
 template <class T>
-void ArbolBinario<T>::inorder(NodoArbol<T> *r)
+void ArbolBinarioContenedor<T>::inorder(NodoArbolContenedor<T> *r)
 {
   if (r == nullptr)
   {
@@ -282,14 +207,14 @@ void ArbolBinario<T>::inorder(NodoArbol<T> *r)
  * Recorre un árbol en postorden
  */
 template <class T>
-void ArbolBinario<T>::postorder()
+void ArbolBinarioContenedor<T>::postorder()
 {
   postorder(root);
   std::cout << std::endl;
 }
 
 template <class T>
-void ArbolBinario<T>::postorder(NodoArbol<T> *r)
+void ArbolBinarioContenedor<T>::postorder(NodoArbolContenedor<T> *r)
 {
   if (r == nullptr)
   {
@@ -305,71 +230,10 @@ void ArbolBinario<T>::postorder(NodoArbol<T> *r)
  * Muestra un árbol por consola
  */
 template <class T>
-void ArbolBinario<T>::print()
+void ArbolBinarioContenedor<T>::print()
 {
   if (root != NULL)
     root->print(false, "");
-}
-
-template <class T>
-int ArbolBinario<T>::contarPorNivel(int nivel){
-  NodoArbol<T>* aux = root;
-  Cola<NodoArbol<T>*> colaNodos;
-  Cola<int> colaNiveles;
-  int nivelActual = 1, cantNodos = 0;
-
-  colaNodos.encolar(aux);
-  colaNiveles.encolar(nivelActual);
-
-  while(nivelActual <= nivel){
-    aux = colaNodos.desencolar();
-    nivelActual = colaNiveles.desencolar();
-
-    if(nivelActual == nivel){
-      cantNodos++;
-    }
-    if(aux->getLeft() != nullptr){
-      colaNodos.encolar(aux->getLeft());
-      colaNiveles.encolar(nivelActual+1);
-    }
-    if(aux->getRight() != nullptr){
-      colaNodos.encolar(aux->getRight());
-      colaNiveles.encolar(nivelActual+1);
-    }
-  }
-
-  return cantNodos;
-}
-
-template <class T>
-void ArbolBinario<T>::espejo(){
-  NodoArbol<T> *aux;
-
-  espejoProceso(root->getLeft());
-  espejoProceso(root->getRight());
-
-  aux = root->getLeft();
-  root->setLeft(root->getRight());
-  root->setRight(aux);
-
-  return;
-}
-
-template <class T>
-void ArbolBinario<T>::espejoProceso(NodoArbol<T> *r){
-  NodoArbol<T> *aux;
-
-  if(r == nullptr){
-    return;
-  }
-
-  aux = r->getLeft();
-  r->setLeft(r->getRight());
-  r->setRight(aux);
-
-  espejoProceso(r->getLeft());
-  espejoProceso(r->getRight());
-
 }
 
 #endif // U05_ARBOL_ARBOL_ARBOLBINARIO_H_

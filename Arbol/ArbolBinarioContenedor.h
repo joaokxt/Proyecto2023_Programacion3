@@ -15,6 +15,8 @@ protected:
 public:
   ArbolBinarioContenedor();
 
+  ArbolBinarioContenedor(T data, string codigo);
+
   void put(T data, string codigo);
 
   T search(T data);
@@ -52,6 +54,14 @@ private:
  */
 template <class T>
 ArbolBinarioContenedor<T>::ArbolBinarioContenedor() { root = nullptr; }
+
+template <class T>
+ArbolBinarioContenedor<T>::ArbolBinarioContenedor(T data, string codigo) {
+  Contenedor<T> contenedorAux;
+  contenedorAux.info = data;
+  contenedorAux.codigo = codigo
+  root = new NodoArbolContenedor(contenedorAux); 
+}
 
 /**
  * Destructor del Arbol

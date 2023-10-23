@@ -14,7 +14,7 @@
 
 using namespace std;
 
-int i, cantArticulosDiferentes = 0, cantArticulos = 0;
+int i, n, cantArticulosDiferentes = 0, cantArticulos = 0;
 
 unsigned int hashFuncString(string clave)
 {
@@ -57,6 +57,10 @@ int main() {
     char separador = ',';
     string grupo, codigo, articulo, linea, *d = new string[cantDepositos];
 
+    for(i=0; i<cantDepositos; i++){
+        ArbolBinarioContenedor<int> arbolDeposito(n, "--");
+        listaArbolesDepositos->insertarUltimo(arbolDeposito);
+    }
     
     
     getline(archivoCSV,linea);

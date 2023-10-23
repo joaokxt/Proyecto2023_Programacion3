@@ -1,5 +1,5 @@
-#ifndef PILA_NODO_H_
-#define PILA_NODO_H_
+#ifndef NODO_H_
+#define NODO_H_
 
 template <class T>
 class Nodo{

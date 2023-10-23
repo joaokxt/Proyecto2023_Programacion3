@@ -8,29 +8,25 @@
 #include "HashMap/HashLista.h"
 #include "HashMap/HashEntry.h"
 #include "Lista/Lista.h"
-#include "Arbol/ArbolBinario.h"
+#include "Arbol/ArbolBinarioAVL.h"
+#include "Arbol/ArbolBinarioContenedor.h"
+#include "structs.h"
 
 using namespace std;
 
 int i, cantArticulosDiferentes = 0, cantArticulos = 0;
 
-struct Articulo{
-    std::string grupo;
-    std::string codigo;
-    std::string nombreArticulo;
-    int *deposito;
-    int total;
-};
 
-template <class T>
-struct Contenedor{
-    T data;
-    string codigo;
-};
 
-ArbolBinario<Contenedor<int>*> *arbolTotales = new ArbolBinario<Contenedor<int>*>();
-HashMapL<string, Articulo*> *mapaArticulos = new HashMapL<string, Articulo*>(1024);
-HashMapL<int, ArbolBinario<Contenedor<int>*>*> *mapaDepositos;
+
+unsigned int hashFuncString(string clave)
+{
+  return (unsigned int)stoi(clave);
+}
+
+ArbolBinarioAVL<Contenedor<int>*> *arbolTotales = new ArbolBinarioAVL<Contenedor<int>*>();
+HashMapL<string, Articulo*> *mapaArticulos = new HashMapL<string, Articulo*>(1024, *hashFuncString);
+Lista<ArbolBinarioContenedor<int>> *listaArbolesDepositos = new Lista<ArbolBinarioContenedor<int>>();
 
 
 int contarColumnasCSV(){
@@ -63,12 +59,7 @@ int main() {
     int total, cantDepositos = contarColumnasCSV() - 3, *deposito = new int[cantDepositos];
     char separador = ',';
     string grupo, codigo, articulo, linea, *d = new string[cantDepositos];
-    mapaDepositos = new HashMapL<int, ArbolBinario<Contenedor<int>*>*>(cantDepositos);
 
-    for(i=0; i<cantDepositos; i++){
-        ArbolBinario<Contenedor<int>*>* arbol = new ArbolBinario<Contenedor<int>*>();
-        mapaDepositos->put(i, arbol);
-    }
     
     
     getline(archivoCSV,linea);
@@ -96,12 +87,6 @@ int main() {
 
         contenedorTotal->data = total;
         contenedorTotal->codigo = codigo;
-
-        for(i=0; i<cantDepositos; i++){
-            contenedorDeposito->data = deposito[i];
-            contenedorDeposito->codigo = codigo;
-            mapaDepositos->get(i)->put(contenedorDeposito);
-        }
 
         mapaArticulos->put(articulo, articuloActual);
         arbolTotales->put(contenedorTotal);

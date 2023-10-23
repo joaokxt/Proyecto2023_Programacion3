@@ -10,7 +10,8 @@ template <class K, class T>
 class HashMapL
 {
 private:
-  Lista<HashEntry<K, T>> **tabla;
+  HashEntry<K, Lista<T>*> **tabla;
+
   unsigned int tamanio;
 
   static unsigned int hashFunc(K clave);
@@ -39,7 +40,7 @@ template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k)
 {
   tamanio = k;
-  tabla = new HashEntry<K, Lista<T>> *[tamanio];
+  tabla = new HashEntry<K, Lista<T>*> *[tamanio];
   for (int i = 0; i < tamanio; i++)
   {
     tabla[i] = NULL;
@@ -51,7 +52,7 @@ template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K))
 {
   tamanio = k;
-  tabla = new HashEntry<K, Lista<T>> *[tamanio];
+  tabla = new HashEntry<K, Lista<T>*> *[tamanio];
   for (int i = 0; i < tamanio; i++)
   {
     tabla[i] = NULL;
@@ -79,8 +80,8 @@ T HashMapL<K, T>::get(K clave)
   {
     throw 404;
   }
-  for(int i=0; i<tabla[pos]->getTamanio(); i++){
-    HashEntry<K,T> entrada = tabla[pos]->getDato(i);
+  for(int i=0; i<tabla[pos]->getValor()->getTamanio(); i++){
+    T entrada = tabla[pos]->geValor()->getDato(i);
     if(entrada->getClave() == clave)
       return entrada->getValor();
   }
@@ -90,14 +91,14 @@ template <class K, class T>
 void HashMapL<K, T>::put(K clave, T valor)
 {
   unsigned int pos = hashFuncP(clave) % tamanio;
-  HashEntry<K,T> *dato = new HashEntry<K, T>(clave, valor);
 
   if (tabla[pos] == NULL)
   {
-    tabla[pos] = new Lista<HashEntry<K, T>>;
+    tabla[pos] = new HashEntry<K, Lista<T>*>(clave, new Lista<T>(valor));
+  }else{
+    tabla[pos]->getValor()->insertarUltimo(valor);
   }
 
-  tabla[pos]->insertarUltimo(dato);
   return;
 }
 

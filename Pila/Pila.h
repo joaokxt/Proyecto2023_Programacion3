@@ -1,7 +1,7 @@
 #ifndef U03_PILAS_PILA_PILA_H_
 #define U03_PILAS_PILA_PILA_H_
 #include <iostream>
-#include "Nodo.h"
+#include "nodo.h"
 /**
  * Clase que implementa una Pila generica, ya que puede
  * almacenar cualquier tipo de dato T
@@ -9,7 +9,7 @@
  */
 template <class T> class Pila {
 private:
-  Nodo<T>* tope;
+  NodoPila<T>* tope;
 public:
   Pila();
   ~Pila();
@@ -47,8 +47,8 @@ template <class T> Pila<T>::~Pila(){
  * @param dato  dato a insertar
  */
 template <class T> void Pila<T>::push(T dato){
-  Nodo<T>* nuevo;
-  nuevo = new Nodo<T>;
+  NodoPila<T>* nuevo;
+  nuevo = new NodoPila<T>;
   nuevo->setDato(dato);
   nuevo->setSiguiente(tope);
   tope = nuevo;
@@ -65,7 +65,7 @@ template <class T> T Pila<T>::pop(){
   }
 
   T dato = tope->getDato();
-  Nodo<T>* aBorrar = tope;
+  NodoPila<T>* aBorrar = tope;
   tope = tope->getSiguiente();
 
   delete aBorrar;
@@ -86,7 +86,7 @@ template <class T> bool Pila<T>::esVacia(){
 }
 
 template <class T> int Pila<T>::getTamanio(){
-  Nodo<T>* aux = tope;
+  NodoPila<T>* aux = tope;
   int tamanio = 0;
 
   if(this->esVacia())
@@ -101,7 +101,7 @@ template <class T> int Pila<T>::getTamanio(){
 }
 
 template <class T> void Pila<T>::print(){
-  Nodo<T>* aux = tope;
+  NodoPila<T>* aux = tope;
   while(aux != nullptr){
     std::cout<<aux->getDato()<<"|";
     aux = aux->getSiguiente();

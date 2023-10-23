@@ -16,9 +16,6 @@ using namespace std;
 
 int i, cantArticulosDiferentes = 0, cantArticulos = 0;
 
-
-
-
 unsigned int hashFuncString(string clave)
 {
   return (unsigned int)stoi(clave);
@@ -64,9 +61,8 @@ int main() {
     
     getline(archivoCSV,linea);
     while(getline(archivoCSV,linea)){
-        struct Articulo *articuloActual = new Articulo;
+        struct Articulo *articuloActual;
         struct Contenedor<int> *contenedorTotal = new Contenedor<int>;
-        struct Contenedor<int> *contenedorDeposito = new Contenedor<int>;
         stringstream stream(linea);
         total = 0;
 
@@ -79,13 +75,9 @@ int main() {
             total += deposito[i];
         }
 
-        articuloActual->grupo = grupo;
-        articuloActual->codigo = codigo;
-        articuloActual->nombreArticulo = articulo;
-        articuloActual->deposito = deposito;
-        articuloActual->total = total;
+        articuloActual = new Articulo(grupo, codigo, articulo, deposito, total);
 
-        contenedorTotal->data = total;
+        contenedorTotal->info = total;
         contenedorTotal->codigo = codigo;
 
         mapaArticulos->put(articulo, articuloActual);

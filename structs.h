@@ -23,13 +23,13 @@ public:
         delete deposito;
     }
     void print(){
-        cout<<"GRUPO: "<<this->grupo<<endl;
-        cout<<"CODIGO: "<<this->codigo<<endl;
-        cout<<"NOMBRE: "<<this->nombreArticulo<<endl;
+        std::cout<<"GRUPO: "<<this->grupo<<std::endl;
+        std::cout<<"CODIGO: "<<this->codigo<<std::endl;
+        std::cout<<"NOMBRE: "<<this->nombreArticulo<<std::endl;
         for(int i=0; i<sizeof(deposito); i++){
-            cout<<"DEPOSTIO "<<i+1<<": "<<this->deposito[i]<<endl;
+            std::cout<<"DEPOSTIO "<<i+1<<": "<<this->deposito[i]<<std::endl;
         }
-        cout<<"STOCK TOTAL: "<<this->total<<endl;
+        std::cout<<"STOCK TOTAL: "<<this->total<<std::endl;
     }
 };
 

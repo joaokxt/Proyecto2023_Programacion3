@@ -3,13 +3,15 @@
 
 #include <string.h>
 #include <iostream>
+#include "../Pila/Pila.h"
+#include "../structs.h"
 using namespace std;
 
 template <class T>
 class NodoArbolContenedor
 {
 private:
-  Pila<Contenedor<T>> *pila;
+  Pila<Contenedor<T>> *pila = new Pila<Contenedor<T>>;
   NodoArbolContenedor *left, *right;
 
 public:
@@ -21,8 +23,7 @@ public:
 
   NodoArbolContenedor(Contenedor<T> data)
   {
-    pila = new Pila();
-    pila.push(data);
+    pila->push(data);
     left = nullptr;
     right = nullptr;
   }

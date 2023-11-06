@@ -59,8 +59,8 @@ template <class T>
 ArbolBinarioContenedor<T>::ArbolBinarioContenedor(T data, string codigo) {
   Contenedor<T> contenedorAux;
   contenedorAux.info = data;
-  contenedorAux.codigo = codigo
-  root = new NodoArbolContenedor(contenedorAux); 
+  contenedorAux.codigo = codigo;
+  root = new NodoArbolContenedor<T>(contenedorAux);
 }
 
 /**
@@ -111,7 +111,7 @@ T ArbolBinarioContenedor<T>::search(T data, NodoArbolContenedor<T> *r)
  */
 template <class T>
 void ArbolBinarioContenedor<T>::put(T data, string codigo) { 
-  root = put(data, string, root); 
+  root = put(data, codigo, root); 
 }
 
 template <class T>

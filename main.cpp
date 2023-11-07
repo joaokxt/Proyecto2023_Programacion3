@@ -82,7 +82,7 @@ int main() {
         articuloActual = new Articulo(grupo, codigo, articulo, deposito, total);
 
         contenedorTotal->info = total;
-        contenedorTotal->codigo = codigo;
+        contenedorTotal->puntero = articuloActual;
 
         mapaArticulos->put(articulo, articuloActual);
         arbolTotales->put(contenedorTotal);

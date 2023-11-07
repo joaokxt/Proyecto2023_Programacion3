@@ -46,7 +46,7 @@ empresa y por línea de comandos permita la visualización de la siguiente infor
 
 
 - -total_art_dif Cantidad total de artículos diferentes.
-- -total_art Cantidad total de artículos.
+- -total_art Cantidad total de artículos.zc
 - -min_stock [n] Listado de artículos con cantidad n o menos de stock.
 - -min_stock [n],[deposito] Listado de artículos con cantidad n o menos de stock según un depósito.
 - -stock [nombre_articulo] El stock total del artículo ingresado como argumento.

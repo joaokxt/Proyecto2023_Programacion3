@@ -11,19 +11,24 @@
 using namespace std;
 
 int main(){
-    ArbolBinarioContenedor<int> *arbolPrueba = new ArbolBinarioContenedor<int>(3, "-");
-
-    cout<<"Hola";
+    Articulo *articulo = new Articulo();
+    ArbolBinarioContenedor<int> *arbolPrueba = new ArbolBinarioContenedor<int>(3, articulo);
 
     for(int i=0; i<10; i++){
-        string codigo = "contenedor";
+        string grupo = "contenedor", codigo = "contenedor", nombre = "nombre";
         codigo+=i+48;
-        arbolPrueba->put(i, codigo);
+        int *deposito = new int[5];
+        articulo = new Articulo(grupo, codigo, nombre, deposito, i);
+        arbolPrueba->put(i, articulo);
     }
 
-    cout<<"2"<<endl;
-    Lista<Contenedor<int>> *listaContenedores;
-    listaContenedores = arbolPrueba->min();
-    Contenedor<int> contenedor = listaContenedores->getDato(0);
-    cout<<contenedor.codigo<<endl;          
+    Lista<Contenedor<int>> listaContenedores;
+    listaContenedores = arbolPrueba->max();
+    for(int i=0; i<listaContenedores.getTamanio(); i++){
+        articulo = listaContenedores.getDato(i).puntero;
+        if(articulo->getGrupo() != "NULO"){
+            articulo->print();
+        }
+    }
+    
 }

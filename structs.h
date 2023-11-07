@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+using namespace std;
 
 class Articulo{
 private:
@@ -12,6 +13,13 @@ private:
     int *deposito;
     int total;
 public:
+    Articulo(){
+        this->grupo = "NULO";
+        this->codigo = "NULO";
+        this->nombreArticulo = "NULO";
+        this->deposito = nullptr;
+        this->total = -1;
+    }
     Articulo(std::string grupo, std::string codigo, std::string nombreArtiuclo, int *deposito, int total){
         this->grupo = grupo;
         this->codigo = codigo;
@@ -22,12 +30,15 @@ public:
     ~Articulo(){
         delete deposito;
     }
+    std::string getGrupo(){
+        return this->grupo;
+    }
     void print(){
-        std::cout<<"GRUPO: "<<this->grupo<<std::endl;
-        std::cout<<"CODIGO: "<<this->codigo<<std::endl;
-        std::cout<<"NOMBRE: "<<this->nombreArticulo<<std::endl;
-        for(int i=0; i<sizeof(deposito); i++){
-            std::cout<<"DEPOSTIO "<<i+1<<": "<<this->deposito[i]<<std::endl;
+        cout<<"GRUPO: "<<this->grupo<<endl;
+        cout<<"CODIGO: "<<this->codigo<<endl;
+        cout<<"NOMBRE: "<<this->nombreArticulo<<endl;
+        for(int i=0; i<sizeof(deposito)-3; i++){
+            cout<<"DEPOSTIO "<<i+1<<": "<<this->deposito[i]<<endl;
         }
         std::cout<<"STOCK TOTAL: "<<this->total<<std::endl;
     }
@@ -36,7 +47,7 @@ public:
 template <class T>
 struct Contenedor{
     T info; //cant deposito
-    std::string codigo;
+    Articulo *puntero;
 };
 
 #endif

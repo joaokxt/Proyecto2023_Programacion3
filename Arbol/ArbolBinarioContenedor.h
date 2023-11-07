@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include "NodoArbolContenedor.h"
-#include "../Cola/Cola.h"
+#include "../Pila/Pila.h"
+#include "../Lista/Lista.h"
+#include "../structs.h"
 using namespace std;
 
 template <class T>
@@ -15,9 +17,9 @@ protected:
 public:
   ArbolBinarioContenedor();
 
-  ArbolBinarioContenedor(T data, string codigo);
+  ArbolBinarioContenedor(T data, Articulo *a);
 
-  void put(T data, string codigo);
+  void put(T data, Articulo *a);
 
   T search(T data);
 
@@ -35,16 +37,18 @@ public:
 
   void print();
 
-  int contarPorNivel(int nivel);
+  Lista<Contenedor<T>> min();
 
-  void espejo();
+  Lista<Contenedor<T>> max();
 
 private:
   T search(T data, NodoArbolContenedor<T> *r);
-  NodoArbolContenedor<T> *put(T data, string codigo, NodoArbolContenedor<T> *r);
+  NodoArbolContenedor<T> *put(T data, Articulo *a, NodoArbolContenedor<T> *r);
   void preorder(NodoArbolContenedor<T> *r);
   void inorder(NodoArbolContenedor<T> *r);
   void postorder(NodoArbolContenedor<T> *r);
+  void min(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li);
+  void max(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li);
 };
 
 /**
@@ -56,11 +60,11 @@ template <class T>
 ArbolBinarioContenedor<T>::ArbolBinarioContenedor() { root = nullptr; }
 
 template <class T>
-ArbolBinarioContenedor<T>::ArbolBinarioContenedor(T data, string codigo) {
+ArbolBinarioContenedor<T>::ArbolBinarioContenedor(T data, Articulo *a) {
   Contenedor<T> contenedorAux;
   contenedorAux.info = data;
-  contenedorAux.codigo = codigo;
-  root = new NodoArbolContenedor<T>(contenedorAux);
+  contenedorAux.puntero = a;
+  root = new NodoArbolContenedor<T>(contenedorAux); 
 }
 
 /**
@@ -70,80 +74,43 @@ template <class T>
 ArbolBinarioContenedor<T>::~ArbolBinarioContenedor() {}
 
 /**
- * Busca un dato en el árbol. Si no esta el dato en el árbol
- * tira una excepción
- * @param clave Valor a buscar
- * @return el valor buscado
- */
-template <class T>
-T ArbolBinarioContenedor<T>::search(T data)
-{
-  return search(data, root);
-}
-
-template <class T>
-T ArbolBinarioContenedor<T>::search(T data, NodoArbolContenedor<T> *r)
-{
-  if (r == nullptr)
-  {
-    throw 404;
-  }
-
-  if (r->getData()->peek().info == data)
-  {
-    return r->getData();
-  }
-
-  if (r->getData()->peek().info > data)
-  {
-    return search(data, r->getLeft());
-  }
-  else
-  {
-    return search(data, r->getRight());
-  }
-}
-
-/**
  * Agrega un dato al árbol
  * @param clave Clave para agregar el dato
  * @param dato Dato a agregar
  */
 template <class T>
-void ArbolBinarioContenedor<T>::put(T data, string codigo) { 
-  root = put(data, codigo, root); 
+void ArbolBinarioContenedor<T>::put(T data, Articulo *a) { 
+  root = put(data, a, root); 
 }
 
 template <class T>
-NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, string codigo, NodoArbolContenedor<T> *r)
+NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, Articulo *a, NodoArbolContenedor<T> *r)
 {
-  Contenedor<T> *contenedorAux;
+  Contenedor<T> contenedorAux;
 
   if (r == nullptr)
   {
-    contenedorAux = new Contenedor<T>;
     contenedorAux.info = data;
-    contenedorAux.codigo = codigo;
+    contenedorAux.puntero = a;
 
     return new NodoArbolContenedor<T>(contenedorAux);
   }
 
-  if (r->getPila()->peek().info == data.info)
+  if (r->getPila()->peek().info == data)
   {
-    contenedorAux = new Contenedor<T>;
     contenedorAux.info = data;
-    contenedorAux.codigo = codigo;
+    contenedorAux.puntero = a;
 
     r->addData(contenedorAux);
   }
 
-  if (r->getData()->peek().info > data.info)
+  if (r->getPila()->peek().info > data)
   {
-    r->setLeft(put(data, codigo, r->getLeft()));
+    r->setLeft(put(data, a, r->getLeft()));
   }
   else
   {
-    r->setRight(put(data, codigo, r->getRight()));
+    r->setRight(put(data, a, r->getRight()));
   }
 
   return r;
@@ -157,83 +124,70 @@ NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, string codigo, No
 template <class T>
 bool ArbolBinarioContenedor<T>::esVacio() { return root == nullptr; }
 
-/**
- * Recorre un árbol en preorden
- */
 template <class T>
-void ArbolBinarioContenedor<T>::preorder()
+Lista<Contenedor<T>> ArbolBinarioContenedor<T>::min()
 {
-  preorder(root);
-  std::cout << std::endl;
+  Lista<Contenedor<T>> listaContenedores;
+  Pila<Contenedor<T>> *pilaAux = root->getPila();
+  while(!pilaAux->esVacia()){
+    Contenedor<T> dato = pilaAux->pop();
+    listaContenedores.insertarUltimo(dato);
+  }
+  min(root, listaContenedores);
+  return listaContenedores;
 }
 
 template <class T>
-void ArbolBinarioContenedor<T>::preorder(NodoArbolContenedor<T> *r)
+void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li)
+{
+  
+  if (r == nullptr)
+  {
+    return;
+  }
+
+  Pila<Contenedor<T>> *pilaAux = r->getPila();
+  while(!pilaAux->esVacia()){
+    Contenedor<T> dato = pilaAux->pop();
+    li.insertarUltimo(dato);
+  }
+
+  min(r->getLeft(), li);
+  if(r != root)
+    min(r->getRight(), li);	
+}
+
+template <class T>
+Lista<Contenedor<T>> ArbolBinarioContenedor<T>::max()
+{
+  Lista<Contenedor<T>> listaContenedores;
+  Pila<Contenedor<T>> *pilaAux = root->getPila();
+  while(!pilaAux->esVacia()){
+    Contenedor<T> dato = pilaAux->pop();
+    listaContenedores.insertarUltimo(dato);
+  }
+  max(root, listaContenedores);
+  return listaContenedores;
+}
+
+template <class T>
+void ArbolBinarioContenedor<T>::max(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li)
 {
   if (r == nullptr)
   {
     return;
   }
 
-  std::cout << r->getData() << " ";
-  preorder(r->getLeft());
-  preorder(r->getRight());
-}
-
-/**
- * Recorre un árbol en orden
- */
-template <class T>
-void ArbolBinarioContenedor<T>::inorder()
-{
-  inorder(root);
-  std::cout << std::endl;
-}
-
-template <class T>
-void ArbolBinarioContenedor<T>::inorder(NodoArbolContenedor<T> *r)
-{
-  if (r == nullptr)
-  {
-    return;
+  Pila<Contenedor<T>> *pilaAux = r->getPila();
+  while(!pilaAux->esVacia()){
+    Contenedor<T> dato = pilaAux->pop();
+    li.insertarUltimo(dato);
   }
 
-  inorder(r->getLeft());
-  std::cout << r->getData() << " ";
-  inorder(r->getRight());
+  max(r->getRight(), li);
+  if(r != root)
+    max(r->getLeft(), li);	
 }
 
-/**
- * Recorre un árbol en postorden
- */
-template <class T>
-void ArbolBinarioContenedor<T>::postorder()
-{
-  postorder(root);
-  std::cout << std::endl;
-}
-
-template <class T>
-void ArbolBinarioContenedor<T>::postorder(NodoArbolContenedor<T> *r)
-{
-  if (r == nullptr)
-  {
-    return;
-  }
-
-  postorder(r->getLeft());
-  postorder(r->getRight());
-  std::cout << r->getData() << " ";
-}
-
-/**
- * Muestra un árbol por consola
- */
-template <class T>
-void ArbolBinarioContenedor<T>::print()
-{
-  if (root != NULL)
-    root->print(false, "");
-}
 
 #endif // U05_ARBOL_ARBOL_ARBOLBINARIO_H_

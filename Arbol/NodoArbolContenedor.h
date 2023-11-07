@@ -23,19 +23,20 @@ public:
 
   NodoArbolContenedor(Contenedor<T> data)
   {
+    pila = new Pila<Contenedor<T>>();
     pila->push(data);
     left = nullptr;
     right = nullptr;
   }
 
-  Pila<T> getPila() const
+  Pila<Contenedor<T>>* getPila() const
   {
     return pila;
   }
 
   void addData(Contenedor<T> data)
   {
-    pila.push(data);
+    pila->push(data);
   }
 
   void setPila(Pila<Contenedor<T>> p)

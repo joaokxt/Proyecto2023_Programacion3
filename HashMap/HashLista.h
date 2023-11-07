@@ -10,7 +10,7 @@ template <class K, class T>
 class HashMapL
 {
 private:
-  HashEntry<K, Lista<T>*> **tabla;
+  Lista<HashEntry<K, T>> **tabla;
 
   unsigned int tamanio;
 
@@ -23,7 +23,7 @@ public:
 
   HashMapL(unsigned int k, unsigned int (*hashFuncP)(K clave));
 
-  T get(K clave);
+  Lista<HashEntry<K, T>> get(K clave);
 
   void put(K clave, T valor);
 
@@ -33,14 +33,14 @@ public:
 
   bool esVacio();
 
-  void print();
+  void printList(K clave);
 };
 
 template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k)
 {
   tamanio = k;
-  tabla = new HashEntry<K, Lista<T>*> *[tamanio];
+  tabla = new Lista<HashEntry<K,T>> *[tamanio];
   for (int i = 0; i < tamanio; i++)
   {
     tabla[i] = NULL;
@@ -52,7 +52,7 @@ template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K))
 {
   tamanio = k;
-  tabla = new HashEntry<K, Lista<T>*> *[tamanio];
+  tabla = new Lista<HashEntry<K,T>> *[tamanio];
   for (int i = 0; i < tamanio; i++)
   {
     tabla[i] = NULL;
@@ -73,18 +73,15 @@ HashMapL<K, T>::~HashMapL()
 }
 
 template <class K, class T>
-T HashMapL<K, T>::get(K clave)
+Lista<HashEntry<K, T>> HashMapL<K, T>::get(K clave)
 {
   unsigned int pos = hashFuncP(clave) % tamanio;
   if (tabla[pos] == NULL)
   {
     throw 404;
   }
-  for(int i=0; i<tabla[pos]->getValor()->getTamanio(); i++){
-    T entrada = tabla[pos]->geValor()->getDato(i);
-    if(entrada->getClave() == clave)
-      return entrada->getValor();
-  }
+  
+  return tabla[pos];
 }
 
 template <class K, class T>
@@ -94,11 +91,10 @@ void HashMapL<K, T>::put(K clave, T valor)
 
   if (tabla[pos] == NULL)
   {
-    tabla[pos] = new HashEntry<K, Lista<T>*>(clave, new Lista<T>(valor));
-  }else{
-    tabla[pos]->getValor()->insertarUltimo(valor);
+    tabla[pos] = new Lista<HashEntry<K,T>>;
   }
 
+  tabla[pos]->insertarUltimo(new HashEntry<K, T>(clave, valor));
   return;
 }
 
@@ -125,25 +121,20 @@ unsigned int HashMapL<K, T>::hashFunc(K clave)
 }
 
 template <class K, class T>
-void HashMapL<K, T>::print()
+void HashMapL<K, T>::printList(K clave)
 {
+   unsigned int pos = hashFuncP(clave) % tamanio;
 
-  std::cout << "i"
-            << " "
-            << "Clave"
-            << "\t\t"
-            << "Valor" << std::endl;
-  std::cout << "--------------------" << std::endl;
-  for (int i = 0; i < tamanio; i++)
-  {
-    std::cout << i << " ";
-    if (tabla[i] != NULL)
-    {
-      std::cout << tabla[i]->getClave() << "\t\t";
-      std::cout << tabla[i]->getValor();
+    if(tabla[pos] == NULL) {
+        throw 404;
     }
-    std::cout << std::endl;
-  }
+
+    Nodo<HashEntry<K, T>> *aux = tabla[pos]->getInicio();
+
+    while (aux != NULL) {
+        std::cout << aux->getDato().getValor() << std::endl;
+        aux = aux->getSiguiente();
+    }
 }
 
 #endif // U05_HASH_HASHMAP_HASHMAP_H_

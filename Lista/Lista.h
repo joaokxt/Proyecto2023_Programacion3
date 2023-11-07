@@ -51,6 +51,8 @@ public:
   void vaciar();
 
   void print();
+
+  void agregar(Lista<T> *li);
 };
 
 /**
@@ -344,6 +346,21 @@ template<class T> void Lista<T>::print() {
         aux = aux->getSiguiente();
     }
     std::cout << "NULL" << std::endl;
+}
+
+template<class T> void Lista<T>::agregar(Lista<T> *li){
+  Nodo<T> *aux = inicio;
+
+  if (aux == nullptr) {
+    inicio = li->getInicio();
+    return;
+  }
+
+  while (aux->getSiguiente() != nullptr) {
+    aux = aux->getSiguiente();
+  }
+  aux->setSiguiente(li->getInicio());
+  return;
 }
 
 #endif // U02_LISTAS_LISTA_LISTA_H_

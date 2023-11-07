@@ -1,64 +1,64 @@
 #ifndef U05_ARBOL_ARBOL_NODOARBOL_H_
 #define U05_ARBOL_ARBOL_NODOARBOL_H_
-
-#include <string.h>
 #include <iostream>
+#include <string.h>
+<<<<<<< HEAD
 #include "../Pila/Pila.h"
-#include "../structs.h"
+=======
+#include <iostream>
+>>>>>>> 800261a0708e16f14002fca66c400cc15284f64c
 using namespace std;
 
-template <class T>
-class NodoArbolContenedor
+template <class T, class N>
+class NodoArbol
 {
 private:
-  Pila<Contenedor<T>> *pila = new Pila<Contenedor<T>>;
-  NodoArbolContenedor *left, *right;
+
+    Pila<T> *pila;
+  T data;
+  N valor;
+  NodoArbol *left, *right;
 
 public:
-  NodoArbolContenedor()
+  NodoArbol()
   {
     left = nullptr;
     right = nullptr;
   }
 
-  NodoArbolContenedor(Contenedor<T> data)
+  NodoArbol(T d, N v)
   {
-    pila = new Pila<Contenedor<T>>();
-    pila->push(data);
+    data = d;
+    valor = v;
     left = nullptr;
     right = nullptr;
   }
 
-  Pila<Contenedor<T>>* getPila() const
+  T getData() const
   {
-    return pila;
+    return data;
   }
 
-  void addData(Contenedor<T> data)
+  void setData(T d)
   {
-    pila->push(data);
+    this->data = d;
   }
 
-  void setPila(Pila<Contenedor<T>> p)
-  {
-    this->pila = p;
-  }
-
-  NodoArbolContenedor *getRight() const
+  NodoArbol *getRight() const
   {
     return right;
   }
 
-  void setRight(NodoArbolContenedor *r)
+  void setRight(NodoArbol *r)
   {
     this->right = r;
   }
-  NodoArbolContenedor *getLeft() const
+  NodoArbol *getLeft() const
   {
     return left;
   }
 
-  void setLeft(NodoArbolContenedor *l)
+  void setLeft(NodoArbol *l)
   {
     this->left = l;
   }
@@ -74,7 +74,7 @@ public:
         cout << " \\";
     }
     cout << "-- ";
-    pila->print();
+    cout << valor << endl;
     if (left != NULL) {
         left->print(false, identacion + (esDerecho ? "|    " : "     "));
     }

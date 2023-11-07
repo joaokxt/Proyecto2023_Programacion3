@@ -40,7 +40,7 @@ public:
         for(int i=0; i<sizeof(deposito)-3; i++){
             cout<<"DEPOSTIO "<<i+1<<": "<<this->deposito[i]<<endl;
         }
-        cout<<"STOCK TOTAL: "<<this->total<<endl;
+        std::cout<<"STOCK TOTAL: "<<this->total<<std::endl;
     }
 };
 

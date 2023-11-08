@@ -33,14 +33,26 @@ public:
     std::string getGrupo(){
         return this->grupo;
     }
+    std::string getCodigo(){
+        return this->codigo;
+    }
+    int getTotal(){
+        return this->total;
+    }
     void print(){
         cout<<"GRUPO: "<<this->grupo<<endl;
         cout<<"CODIGO: "<<this->codigo<<endl;
         cout<<"NOMBRE: "<<this->nombreArticulo<<endl;
         for(int i=0; i<sizeof(deposito)-3; i++){
-            cout<<"DEPOSTIO "<<i+1<<": "<<this->deposito[i]<<endl;
+            cout<<"DEPOSITO "<<i+1<<": "<<this->deposito[i]<<endl;
         }
         std::cout<<"STOCK TOTAL: "<<this->total<<std::endl;
+    }
+    void printStock(){
+        std::cout<<"STOCK DE "<<this->codigo<<": "<<this->total<<std::endl;
+    }
+    void printCodigo(){
+        std::cout<<this->codigo<<endl;
     }
 };
 

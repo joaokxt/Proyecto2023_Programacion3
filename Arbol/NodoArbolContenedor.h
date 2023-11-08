@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include <iostream>
-#include "../Pila/Pila.h"
+#include "../Cola/Cola.h"
 #include "../structs.h"
 using namespace std;
 
@@ -11,7 +11,7 @@ template <class T>
 class NodoArbolContenedor
 {
 private:
-  Pila<Contenedor<T>> *pila = new Pila<Contenedor<T>>;
+  Cola<Contenedor<T>> *cola = new Cola<Contenedor<T>>;
   NodoArbolContenedor *left, *right;
 
 public:
@@ -23,25 +23,25 @@ public:
 
   NodoArbolContenedor(Contenedor<T> data)
   {
-    pila = new Pila<Contenedor<T>>();
-    pila->push(data);
+    cola = new Cola<Contenedor<T>>();
+    cola->encolar(data);
     left = nullptr;
     right = nullptr;
   }
 
-  Pila<Contenedor<T>>* getPila() const
+  Cola<Contenedor<T>>* getCola() const
   {
-    return pila;
+    return cola;
   }
 
   void addData(Contenedor<T> data)
   {
-    pila->push(data);
+    cola->encolar(data);
   }
 
-  void setPila(Pila<Contenedor<T>> p)
+  void setCola(Cola<Contenedor<T>> c)
   {
-    this->pila = p;
+    this->cola = c;
   }
 
   NodoArbolContenedor *getRight() const
@@ -74,7 +74,7 @@ public:
         cout << " \\";
     }
     cout << "-- ";
-    pila->print();
+    cola->print();
     if (left != NULL) {
         left->print(false, identacion + (esDerecho ? "|    " : "     "));
     }

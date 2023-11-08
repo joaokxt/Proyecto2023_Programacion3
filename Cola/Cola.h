@@ -10,13 +10,14 @@
  */
 template <class T> class Cola {
 private:
-  Nodo<T> *frente;
+  NodoCola<T> *frente;
 public:
   Cola();
   ~Cola();
   void encolar(T dato);
   void encolarPrioridad(T dato, int prioridad);
   T desencolar();
+  T peek();
   int getTamanio();
   bool esVacia();
   void print();
@@ -45,11 +46,10 @@ template <class T> Cola<T>::~Cola(){
  * @param dato  dato a insertar
  */
 template <class T> void Cola<T>::encolar(T dato){
-  Nodo<T> *aux, *nuevo = new Nodo<T>();
+  NodoCola<T> *aux, *nuevo = new NodoCola<T>();
 
   nuevo->setDato(dato);
   nuevo->setSiguiente(nullptr);
-  nuevo->setPrioridad(1000);
 
   if(this->esVacia()){
     frente = nuevo;
@@ -62,35 +62,13 @@ template <class T> void Cola<T>::encolar(T dato){
   }
 }
 
-template <class T> void Cola<T>::encolarPrioridad(T dato, int prioridad){
-  Nodo<T> *aux, *nuevo = new Nodo<T>();
-
-  nuevo->setDato(dato);
-  nuevo->setSiguiente(nullptr);
-  nuevo->setPrioridad(prioridad);
-
-  if(this->esVacia()){
-    frente = nuevo;
-  }else if(frente->getPrioridad()>nuevo->getPrioridad()){
-    nuevo->setSiguiente(frente);
-    frente = nuevo;
-  }else{
-    aux = frente;
-    while(aux->getSiguiente() != nullptr && aux->getSiguiente()->getPrioridad()<=nuevo->getPrioridad()){ 
-      aux = aux->getSiguiente();
-    }
-    nuevo->setSiguiente(aux->getSiguiente());
-    aux->setSiguiente(nuevo);
-  }
-}
-
 /**
  * Obtener el dato de la Cola
  * @tparam T
  * @return dato almacenado en el nodo
  */
 template <class T> T Cola<T>::desencolar(){
-  Nodo<T>* aBorrar;
+  NodoCola<T>* aBorrar;
   T dato;
 
   if(this->esVacia()){
@@ -105,8 +83,12 @@ template <class T> T Cola<T>::desencolar(){
   return dato;
 }
 
+template <class T> T Cola<T>::peek(){
+  return frente->getDato();
+}
+
 template <class T> int Cola<T>::getTamanio(){
-  Nodo<T>* aux = new Nodo<T>();
+  NodoCola<T>* aux = new NodoCola<T>();
   int tamanio = 0;
 
   if(esVacia()){
@@ -132,7 +114,7 @@ template <class T> bool Cola<T>::esVacia(){
 }
 
 template <class T> void Cola<T>::print(){
-  Nodo<T>* aux = frente;
+  NodoCola<T>* aux = frente;
 
   while(aux != nullptr){
     std::cout<<aux->getDato()<<"->";

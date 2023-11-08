@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "NodoArbolContenedor.h"
-#include "../Pila/Pila.h"
+#include "../Cola/Cola.h"
 #include "../Lista/Lista.h"
 #include "../structs.h"
 using namespace std;
@@ -21,10 +21,6 @@ public:
 
   void put(T data, Articulo *a);
 
-  T search(T data);
-
-  void remove(T data);
-
   void preorder();
 
   void inorder();
@@ -37,7 +33,7 @@ public:
 
   void print();
 
-  Lista<Contenedor<T>> min();
+  Cola<Contenedor<T>> min();
 
   Lista<Contenedor<T>> max();
 
@@ -47,7 +43,7 @@ private:
   void preorder(NodoArbolContenedor<T> *r);
   void inorder(NodoArbolContenedor<T> *r);
   void postorder(NodoArbolContenedor<T> *r);
-  void min(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li);
+  void min(NodoArbolContenedor<T> *r, Cola<Contenedor<T>> &co);
   void max(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li);
 };
 
@@ -96,7 +92,7 @@ NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, Articulo *a, Nodo
     return new NodoArbolContenedor<T>(contenedorAux);
   }
 
-  if (r->getPila()->peek().info == data)
+  if (r->getCola()->peek().info == data)
   {
     contenedorAux.info = data;
     contenedorAux.puntero = a;
@@ -104,7 +100,7 @@ NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, Articulo *a, Nodo
     r->addData(contenedorAux);
   }
 
-  if (r->getPila()->peek().info > data)
+  if (r->getCola()->peek().info > data)
   {
     r->setLeft(put(data, a, r->getLeft()));
   }
@@ -125,20 +121,21 @@ template <class T>
 bool ArbolBinarioContenedor<T>::esVacio() { return root == nullptr; }
 
 template <class T>
-Lista<Contenedor<T>> ArbolBinarioContenedor<T>::min()
+Cola<Contenedor<T>> ArbolBinarioContenedor<T>::min()
 {
-  Lista<Contenedor<T>> listaContenedores;
-  Pila<Contenedor<T>> *pilaAux = root->getPila();
-  while(!pilaAux->esVacia()){
-    Contenedor<T> dato = pilaAux->pop();
-    listaContenedores.insertarUltimo(dato);
+  Cola<Contenedor<T>> colaContenedores;
+  Cola<Contenedor<T>> *colaAux = root->getCola();
+  Contenedor<T> dato = colaAux->desencolar();
+  while(!colaAux->esVacia()){
+    Contenedor<T> dato = colaAux->desencolar();
+    dato.puntero->printCodigo();
   }
-  min(root, listaContenedores);
-  return listaContenedores;
+  min(root, colaContenedores);
+  return colaContenedores;
 }
 
 template <class T>
-void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li)
+void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r, Cola<Contenedor<T>> &co)
 {
   
   if (r == nullptr)
@@ -146,24 +143,24 @@ void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r, Lista<Contenedor<
     return;
   }
 
-  Pila<Contenedor<T>> *pilaAux = r->getPila();
-  while(!pilaAux->esVacia()){
-    Contenedor<T> dato = pilaAux->pop();
-    li.insertarUltimo(dato);
+  Cola<Contenedor<T>> *colaAux = r->getCola();
+  while(!colaAux->esVacia()){
+    Contenedor<T> dato = colaAux->desencolar();
+    dato.puntero->printCodigo();
   }
 
-  min(r->getLeft(), li);
+  min(r->getLeft(), co);
   if(r != root)
-    min(r->getRight(), li);	
+    min(r->getRight(), co);	
 }
 
 template <class T>
 Lista<Contenedor<T>> ArbolBinarioContenedor<T>::max()
 {
   Lista<Contenedor<T>> listaContenedores;
-  Pila<Contenedor<T>> *pilaAux = root->getPila();
-  while(!pilaAux->esVacia()){
-    Contenedor<T> dato = pilaAux->pop();
+  Cola<Contenedor<T>> *colaAux = root->getCola();
+  while(!colaAux->esVacia()){
+    Contenedor<T> dato = colaAux->desencolar();
     listaContenedores.insertarUltimo(dato);
   }
   max(root, listaContenedores);
@@ -178,9 +175,9 @@ void ArbolBinarioContenedor<T>::max(NodoArbolContenedor<T> *r, Lista<Contenedor<
     return;
   }
 
-  Pila<Contenedor<T>> *pilaAux = r->getPila();
-  while(!pilaAux->esVacia()){
-    Contenedor<T> dato = pilaAux->pop();
+  Cola<Contenedor<T>> *colaAux = r->getCola();
+  while(!colaAux->esVacia()){
+    Contenedor<T> dato = colaAux->desencolar();
     li.insertarUltimo(dato);
   }
 

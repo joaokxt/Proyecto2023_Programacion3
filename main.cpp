@@ -66,10 +66,6 @@ int contarColumnasCSV()
 int main(int argc, char *argv[])
 {
 
-clock_t begin;
-std::cout << "Comenzando a medir Tiempo\n" << endl;
-begin = clock();
-
 bool check;
 cantDepositos = contarColumnasCSV() - 3;
 nDeposito = new int[cantDepositos];
@@ -219,6 +215,9 @@ while (getline(archivoCSV, linea))
 }
 archivoCSV.close();
 
+clock_t begin;
+std::cout << "Comenzando a medir Tiempo\n" << endl;
+begin = clock();
 
 //  Se procede a mostrar los argumentos ingresados
 if(argumento[0]){
@@ -228,13 +227,11 @@ if(argumento[1]){
     cout << "La cantidad total de articulos es de: " << cantArticulos << endl;
 }
 if(argumento[2]){
-    cout<<"Mostrando codigos de productos con menos de "<<nMin<<" en stock: "<<endl;
+    cout<<"Mostrando codigos de productos con "<<nMin<<" o menos en stock: "<<endl;
     arbolMinimo->min();
     cout<<endl;
 }
 if(argumento[3]){
-    /*for (int i = 0; i < cantDepositos; i++)
-        listaArbolesDepositos->getDato(i).min();*/
     listaArbolesDepositos->getDato(depos-1).min();
 }
 if(argumento[4]){
@@ -268,7 +265,7 @@ if(argumento[5]){
     }
 }
 if(argumento[6]){
-    cout<<"Mostrando codigos de productos con mas de "<<nMax<<" en stock: "<<endl<<endl;
+    cout<<"Mostrando codigos de productos con "<<nMax<<" o mas en stock: "<<endl<<endl;
     arbolMaximo->max();
     cout<<endl;
 }

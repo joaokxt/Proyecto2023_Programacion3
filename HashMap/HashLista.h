@@ -79,6 +79,7 @@ HashMapL<K, T>::~HashMapL() {
 template <class K, class T>
 void HashMapL<K, T>::put(K clave, T valor) {
     unsigned int pos = hashFuncP(clave) % tamanio;
+
     if(tabla[pos] == NULL) {
         tabla[pos] = new Lista<HashEntry<K, T>*>();
     }

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cmath>
 
 #include "HashMap/HashLista.h"
 #include "HashMap/HashEntry.h"
@@ -21,15 +22,14 @@ string comandos[5] = {"total_art_dif", "total_art", "min_stock", "stock", "max_s
 Lista<string> nombresBusqueda;
 
 unsigned int hashFuncString(string clave)
-{
-    try
-    {
-        return (unsigned int)stoi(clave);
-    }
-    catch (std::invalid_argument)
-    {
-        return 0;
-    }
+{   
+    int x = clave[0], suma = 0, final = clave.size() - 1;
+
+    suma += clave[1] * pow(x,3) + clave[2] * pow(x,2) + clave[3] * x;
+    suma += clave[final] * pow(x,3) + clave[final-1] * pow(x,2) + clave[final-2] * x;
+    
+    return suma;
+
 }
 
 //  mapaArticulos es un HashMap que contiene todos los articulos, con su codigo como clave
@@ -193,7 +193,7 @@ while (getline(archivoCSV, linea))
         listaPrueba = mapaArticulos->get(nombreArticulo);
         for (i = 0; i < listaPrueba->getTamanio(); i++)
         {
-            if (listaPrueba->getDato(i)->getValor()->getCodigo() == codigo)
+            if (listaPrueba->getDato(i)->getValor()->getNombre() == nombreArticulo)
             {
                 presente = true;
             }
@@ -207,11 +207,9 @@ while (getline(archivoCSV, linea))
     }
     catch (int e)
     {
-        if(e == 404){
-            mapaArticulos->put(nombreArticulo, articuloActual);
-            cantArticulos += total;
-            	cantArticulosDiferentes++;
-        }
+        mapaArticulos->put(nombreArticulo, articuloActual);
+        cantArticulos += total;
+        cantArticulosDiferentes++;
     }
 
     for (i = 0; i < cantDepositos; i++)
@@ -223,89 +221,56 @@ archivoCSV.close();
 
 
 //  Se procede a mostrar los argumentos ingresados
-switch (argumento[0])
-{
-case 0:
-    break;
-case 1:
+if(argumento[0]){
     cout << "La cantidad total de articulos diferentes es de: " << cantArticulosDiferentes << endl;
-    break;
 }
-switch (argumento[1])
-{
-case 0:
-    break;
-case 1:
+if(argumento[1]){
     cout << "La cantidad total de articulos es de: " << cantArticulos << endl;
-    break;
 }
-switch (argumento[2])
-{
-case 0:
-    break;
-case 1:
+if(argumento[2]){
     cout<<"Mostrando codigos de productos con menos de "<<nMin<<" en stock: "<<endl;
     arbolMinimo->min();
     cout<<endl;
-    break;
 }
-switch (argumento[3])
-{
-case 0:
-    break;
-case 1:
+if(argumento[3]){
     /*for (int i = 0; i < cantDepositos; i++)
         listaArbolesDepositos->getDato(i).min();*/
     listaArbolesDepositos->getDato(depos-1).min();
-    break;
 }
-switch (argumento[4])
-{
-case 0:
-    break;
-case 1:
+if(argumento[4]){
     Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
     for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
-    {
+    {   
         listaBusqueda = mapaArticulos->get(nombresBusqueda.getDato(i));
+        string nombreBuscar = nombresBusqueda.getDato(i);
+        
         for (j = 0; j < listaBusqueda->getTamanio(); j++)
         {
-            if (listaBusqueda->getDato(j)->getValor()->getCodigo() == nombresBusqueda.getDato(i))
+            if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombreBuscar)
             {
                 listaBusqueda->getDato(j)->getValor()->printStock();
             }
         }
     }
-    break;
 }
-switch (argumento[5])
-{
-case 0:
-    break;
-case 1:
+if(argumento[5]){
     Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
     for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
     {
         listaBusqueda = mapaArticulos->get(nombresBusqueda.getDato(i));
         for (j = 0; j < listaBusqueda->getTamanio(); j++)
         {
-            if (listaBusqueda->getDato(j)->getValor()->getCodigo() == nombresBusqueda.getDato(i))
+            if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombresBusqueda.getDato(i))
             {
                 listaBusqueda->getDato(j)->getValor()->printDeposito(depos);
             }
         }
     }
-    break;
 }
-switch (argumento[6])
-{
-case 0:
-    break;
-case 1:
+if(argumento[6]){
     cout<<"Mostrando codigos de productos con mas de "<<nMax<<" en stock: "<<endl<<endl;
     arbolMaximo->max();
     cout<<endl;
-    break;
 }
 
 clock_t end = clock();

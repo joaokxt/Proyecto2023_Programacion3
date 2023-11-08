@@ -137,7 +137,6 @@ void ArbolBinarioContenedor<T>::min()
 template <class T>
 void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r)
 {
-  
   if (r == nullptr)
   {
     return;

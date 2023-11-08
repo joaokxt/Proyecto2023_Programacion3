@@ -39,11 +39,6 @@ public:
     cola->encolar(data);
   }
 
-  void setCola(Cola<Contenedor<T>> c)
-  {
-    this->cola = c;
-  }
-
   NodoArbolContenedor *getRight() const
   {
     return right;
@@ -63,23 +58,6 @@ public:
     this->left = l;
   }
 
-   void print(bool esDerecho, string identacion) {
-    if (right != NULL) {
-        right->print(true, identacion + (esDerecho ? "     " : "|    "));
-    }
-    cout << identacion;
-    if (esDerecho) {
-        cout << " /";
-    } else {
-        cout << " \\";
-    }
-    cout << "-- ";
-    cola->print();
-    if (left != NULL) {
-        left->print(false, identacion + (esDerecho ? "|    " : "     "));
-    }
-}
-
-  };
+};
 
 #endif // U05_ARBOL_ARBOL_NODOARBOL_H_

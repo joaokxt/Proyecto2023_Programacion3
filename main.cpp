@@ -204,12 +204,7 @@ int main(int argc, char *argv[])
     case 0:
         break;
     case 1:
-        Lista<Contenedor<int>> listaMinimos;
-        listaMinimos = arbolMinimo->min();
-        for (int i = 1; i < listaMinimos.getTamanio(); i++)
-        {
-            listaMinimos.getDato(i).puntero->print();
-        }
+        arbolMinimo->min();
         break;
     }
     switch (argumento[3])
@@ -256,11 +251,7 @@ int main(int argc, char *argv[])
         break;
     case 1:
         Lista<Contenedor<int>> ListaMaximos;
-        ListaMaximos = arbolMaximo->max();
-        for (int i = 1; i < ListaMaximos.getTamanio(); i++)
-        {
-            ListaMaximos.getDato(i).puntero->print();
-        }
+        arbolMaximo->max();
         break;
     }
 

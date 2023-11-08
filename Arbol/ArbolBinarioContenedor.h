@@ -33,9 +33,9 @@ public:
 
   void print();
 
-  Cola<Contenedor<T>> min();
+  void min();
 
-  Lista<Contenedor<T>> max();
+  void max();
 
 private:
   T search(T data, NodoArbolContenedor<T> *r);
@@ -43,8 +43,8 @@ private:
   void preorder(NodoArbolContenedor<T> *r);
   void inorder(NodoArbolContenedor<T> *r);
   void postorder(NodoArbolContenedor<T> *r);
-  void min(NodoArbolContenedor<T> *r, Cola<Contenedor<T>> &co);
-  void max(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li);
+  void min(NodoArbolContenedor<T> *r);
+  void max(NodoArbolContenedor<T> *r);
 };
 
 /**
@@ -99,8 +99,7 @@ NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, Articulo *a, Nodo
 
     r->addData(contenedorAux);
   }
-
-  if (r->getCola()->peek().info > data)
+  else if (r->getCola()->peek().info > data)
   {
     r->setLeft(put(data, a, r->getLeft()));
   }
@@ -112,7 +111,6 @@ NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, Articulo *a, Nodo
   return r;
 }
 
-
 /**
  * Informa si un árbol esta vacío
  * @return
@@ -121,21 +119,19 @@ template <class T>
 bool ArbolBinarioContenedor<T>::esVacio() { return root == nullptr; }
 
 template <class T>
-Cola<Contenedor<T>> ArbolBinarioContenedor<T>::min()
+void ArbolBinarioContenedor<T>::min()
 {
-  Cola<Contenedor<T>> colaContenedores;
   Cola<Contenedor<T>> *colaAux = root->getCola();
   Contenedor<T> dato = colaAux->desencolar();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    dato.puntero->printCodigo();
+    dato.puntero->print();
   }
-  min(root, colaContenedores);
-  return colaContenedores;
+  min(root);
 }
 
 template <class T>
-void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r, Cola<Contenedor<T>> &co)
+void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r)
 {
   
   if (r == nullptr)
@@ -146,29 +142,27 @@ void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r, Cola<Contenedor<T
   Cola<Contenedor<T>> *colaAux = r->getCola();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    dato.puntero->printCodigo();
+    dato.puntero->print();
   }
 
-  min(r->getLeft(), co);
+  min(r->getLeft());
   if(r != root)
-    min(r->getRight(), co);	
+    min(r->getRight());	
 }
 
 template <class T>
-Lista<Contenedor<T>> ArbolBinarioContenedor<T>::max()
+void ArbolBinarioContenedor<T>::max()
 {
-  Lista<Contenedor<T>> listaContenedores;
   Cola<Contenedor<T>> *colaAux = root->getCola();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    listaContenedores.insertarUltimo(dato);
+    dato.puntero->print();
   }
-  max(root, listaContenedores);
-  return listaContenedores;
+  max(root);
 }
 
 template <class T>
-void ArbolBinarioContenedor<T>::max(NodoArbolContenedor<T> *r, Lista<Contenedor<T>> &li)
+void ArbolBinarioContenedor<T>::max(NodoArbolContenedor<T> *r)
 {
   if (r == nullptr)
   {
@@ -178,12 +172,12 @@ void ArbolBinarioContenedor<T>::max(NodoArbolContenedor<T> *r, Lista<Contenedor<
   Cola<Contenedor<T>> *colaAux = r->getCola();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    li.insertarUltimo(dato);
+    dato.puntero->print();
   }
 
-  max(r->getRight(), li);
+  max(r->getRight());
   if(r != root)
-    max(r->getLeft(), li);	
+    max(r->getLeft());	
 }
 
 

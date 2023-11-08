@@ -38,6 +38,7 @@ int contarColumnasCSV()
     return contadorColumnas;
 }
 
+
 int main(int argc, char *argv[])
 {    
     bool check;
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     string grupo, codigo, nombreArticulo, linea, *d = new string[5];
     bool presente;
 
+    Articulo **articulosPunteros = new Articulo*[1000];
 
     getline(archivoCSV, linea);
     while (getline(archivoCSV, linea))
@@ -86,8 +88,12 @@ int main(int argc, char *argv[])
         }
 
         articuloActual = new Articulo(grupo, codigo, nombreArticulo, deposito, total);
+        articulosPunteros[cantArticulos] = articuloActual;
         arbolMinimo->put(total, articuloActual);
+        cantArticulos ++;
     }
+
+    cout<<"Hola"<<endl;
 
     archivoCSV.close();
 
@@ -96,16 +102,7 @@ int main(int argc, char *argv[])
          << endl;
     begin = clock();
 
-    Cola<Contenedor<int>> colaMinimos;
-    Contenedor<int> contenedorActual;
-    Articulo* articuloActual;
-
-    colaMinimos = arbolMinimo->min();
-
-
-
-
-   
+    arbolMinimo->min();
 
     clock_t end = clock();
     double elapsed_secs = static_cast<double>(end - begin) / CLOCKS_PER_SEC;

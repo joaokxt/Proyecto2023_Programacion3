@@ -20,7 +20,7 @@ public:
         this->deposito = nullptr;
         this->total = -1;
     }
-    Articulo(std::string grupo, std::string codigo, std::string nombreArtiuclo, int *deposito, int total){
+    Articulo(std::string grupo, std::string codigo, std::string nombreArticulo, int *deposito, int total){
         this->grupo = grupo;
         this->codigo = codigo;
         this->nombreArticulo = nombreArticulo;
@@ -40,13 +40,14 @@ public:
         return this->total;
     }
     void print(){
-        cout<<"GRUPO: "<<this->grupo<<endl;
-        cout<<"CODIGO: "<<this->codigo<<endl;
-        cout<<"NOMBRE: "<<this->nombreArticulo<<endl;
+        cout<<"|=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|"<<endl;
+        cout<<" GRUPO: "<<this->grupo<<endl;
+        cout<<" CODIGO: "<<this->codigo<<endl;
+        cout<<" NOMBRE: "<<this->nombreArticulo<<endl;
         for(int i=0; i<sizeof(deposito)-3; i++){
-            cout<<"DEPOSITO "<<i+1<<": "<<this->deposito[i]<<endl;
+            cout<<" DEPOSITO "<<i+1<<": "<<this->deposito[i]<<endl;
         }
-        std::cout<<"STOCK TOTAL: "<<this->total<<std::endl;
+        std::cout<<"    STOCK TOTAL: "<<this->total<<std::endl;
     }
     void printStock(){
         std::cout<<"STOCK DE "<<this->codigo<<": "<<this->total<<std::endl;

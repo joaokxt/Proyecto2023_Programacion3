@@ -154,6 +154,7 @@ template <class T>
 void ArbolBinarioContenedor<T>::max()
 {
   Cola<Contenedor<T>> *colaAux = root->getCola();
+  Contenedor<T> dato = colaAux->desencolar();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
     dato.puntero->print();

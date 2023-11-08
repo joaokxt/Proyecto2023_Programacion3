@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     ArbolBinarioContenedor<int> *arbolMinimo = new ArbolBinarioContenedor<int>(nMin, new Articulo());
     ifstream archivoCSV("Inventariado Fisico.csv");
 
-    int total, *deposito = new int[5];;
+    int total, *deposito = new int[5];
     char separador = ';';
     string grupo, codigo, nombreArticulo, linea, *d = new string[5];
     bool presente;
@@ -92,8 +92,6 @@ int main(int argc, char *argv[])
         arbolMinimo->put(total, articuloActual);
         cantArticulos ++;
     }
-
-    cout<<"Hola"<<endl;
 
     archivoCSV.close();
 

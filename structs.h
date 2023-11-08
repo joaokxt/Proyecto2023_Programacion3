@@ -51,10 +51,10 @@ public:
         std::cout<<"STOCK DE "<<this->codigo<<": "<<this->total<<std::endl;
     }
     void printCodigo(){
-        std::cout<<this->codigo<<endl;
+        std::cout<<" > "<<this->codigo<<endl;
     }
     void printDeposito(int numDeposito){
-        std::cout<<"STOCK EN DEPOSITO "<<numDeposito<<" DE "<<this->nombreArticulo<<": "<<this->deposito[numDeposito-1]<<std::endl;
+        std::cout<<"STOCK EN DEPOSITO ["<<numDeposito<<"]  DE '"<<this->nombreArticulo<<"': "<<this->deposito[numDeposito-1]<<std::endl;
     }
 };
 

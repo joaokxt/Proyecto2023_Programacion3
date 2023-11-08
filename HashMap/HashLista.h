@@ -79,11 +79,9 @@ HashMapL<K, T>::~HashMapL() {
 template <class K, class T>
 void HashMapL<K, T>::put(K clave, T valor) {
     unsigned int pos = hashFuncP(clave) % tamanio;
-    // Si en la posición no hay nada, creamos una Lista<HashEntry> y la insertamos en la posición
     if(tabla[pos] == NULL) {
         tabla[pos] = new Lista<HashEntry<K, T>*>();
     }
-    // Insertamos el elemento en la lista
     tabla[pos]->insertarUltimo(new HashEntry<K, T>(clave, valor));
 }
 

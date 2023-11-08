@@ -244,7 +244,7 @@ switch (argumento[2])
 case 0:
     break;
 case 1:
-    cout<<"Mostrando códigos de productos con menos de "<<nMin<<" en stock: "<<endl;
+    cout<<"Mostrando codigos de productos con menos de "<<nMin<<" en stock: "<<endl;
     arbolMinimo->min();
     cout<<endl;
     break;
@@ -310,6 +310,6 @@ case 1:
 
 clock_t end = clock();
 double elapsed_secs = static_cast<double>(end - begin) / CLOCKS_PER_SEC;
-cout << "Tardo elapsed_secs " << elapsed_secs << "\n"
-     << std::endl;
+cout << endl;
+cout << "Tardo elapsed_secs " << elapsed_secs << "\n" << std::endl;
 }

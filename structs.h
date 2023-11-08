@@ -44,9 +44,7 @@ public:
         std::cout<<" GRUPO: "<<this->grupo<<endl;
         std::cout<<" CODIGO: "<<this->codigo<<endl;
         std::cout<<" NOMBRE: "<<this->nombreArticulo<<endl;
-        for(int i=0; i<sizeof(deposito)-3; i++){
-            std::cout<<" DEPOSITO "<<i+1<<": "<<this->deposito[i]<<endl;
-        }
+        for(int i=0; i<sizeof(deposito)-3; i++) std::cout<<" DEPOSITO "<<i+1<<": "<<this->deposito[i]<<endl;
         std::cout<<"    STOCK TOTAL: "<<this->total<<std::endl;
     }
     void printStock(){
@@ -56,7 +54,7 @@ public:
         std::cout<<this->codigo<<endl;
     }
     void printDeposito(int numDeposito){
-        std::cout<<"STOCK DEPOSITO "<<numDeposito<<": "<<this->deposito[numDeposito-1]<<std::endl;
+        std::cout<<"STOCK EN DEPOSITO "<<numDeposito<<" DE "<<this->nombreArticulo<<": "<<this->deposito[numDeposito-1]<<std::endl;
     }
 };
 

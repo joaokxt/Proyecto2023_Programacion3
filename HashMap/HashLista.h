@@ -34,6 +34,11 @@ public:
     void print();
 };
 
+/**
+* Constructor de la clase HashMapL
+* @tparam K Clave
+* @tparam T Valor
+*/
 template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k) {
     tamanio = k;
@@ -43,7 +48,6 @@ HashMapL<K, T>::HashMapL(unsigned int k) {
     }
     hashFuncP = hashFunc;
 }
-
 template <class K, class T>
 HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K)) {
     tamanio = k;
@@ -54,6 +58,11 @@ HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K)) {
     hashFuncP = fp;
 }
 
+/**
+* Destructor de la clase HashMapL
+* @tparam K Clave
+* @tparam T Valor
+*/
 template <class K, class T>
 HashMapL<K, T>::~HashMapL() {
     for(int i = 0; i < tamanio; i++) {
@@ -62,18 +71,27 @@ HashMapL<K, T>::~HashMapL() {
         }
     }
 }
-
+/**
+* Método para introducir un elemento en el HashMapL
+* @tparam K Clave
+* @tparam T Valor
+*/
 template <class K, class T>
 void HashMapL<K, T>::put(K clave, T valor) {
     unsigned int pos = hashFuncP(clave) % tamanio;
-
+    // Si en la posición no hay nada, creamos una Lista<HashEntry> y la insertamos en la posición
     if(tabla[pos] == NULL) {
         tabla[pos] = new Lista<HashEntry<K, T>*>();
     }
-
+    // Insertamos el elemento en la lista
     tabla[pos]->insertarUltimo(new HashEntry<K, T>(clave, valor));
 }
 
+/**
+* Método para saber si está vacío o no
+* @tparam K Clave
+* @tparam T Valor
+*/
 template <class K, class T>
 bool HashMapL<K, T>::esVacio() {
     for(int i = 0; i < tamanio; i++) {
@@ -89,8 +107,13 @@ unsigned int HashMapL<K, T>::hashFunc(K clave) {
     return (unsigned int) clave;
 }
 
+/**
+*Método que devuelve la lista según la clave que recibe
+* @tparam K Clave
+* @tparam T Valor
+*/
 template <class K, class T>
-Lista<HashEntry<K, T>*>* HashMapL<K, T>::get(K clave) { //Método que devuelve la lista según la clave que recibe
+Lista<HashEntry<K, T>*>* HashMapL<K, T>::get(K clave) {
     unsigned int pos = hashFuncP(clave) % tamanio;
 
     if(tabla[pos] == NULL) {

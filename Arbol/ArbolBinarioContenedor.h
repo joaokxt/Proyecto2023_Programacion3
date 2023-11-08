@@ -118,6 +118,10 @@ NodoArbolContenedor<T> *ArbolBinarioContenedor<T>::put(T data, Articulo *a, Nodo
 template <class T>
 bool ArbolBinarioContenedor<T>::esVacio() { return root == nullptr; }
 
+/**
+ * Se obtienen los datos más chicos del árbol (lado izquierdo)
+  * @return
+  */
 template <class T>
 void ArbolBinarioContenedor<T>::min()
 {
@@ -125,7 +129,7 @@ void ArbolBinarioContenedor<T>::min()
   Contenedor<T> dato = colaAux->desencolar();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    dato.puntero->print();
+    dato.puntero->printCodigo();
   }
   min(root);
 }
@@ -142,14 +146,17 @@ void ArbolBinarioContenedor<T>::min(NodoArbolContenedor<T> *r)
   Cola<Contenedor<T>> *colaAux = r->getCola();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    dato.puntero->print();
+    dato.puntero->printCodigo();
   }
 
   min(r->getLeft());
   if(r != root)
     min(r->getRight());	
 }
-
+/**
+ * Se obtienen los datos más grandes del árbol (lado derecho)
+  * @return
+  */
 template <class T>
 void ArbolBinarioContenedor<T>::max()
 {
@@ -157,7 +164,7 @@ void ArbolBinarioContenedor<T>::max()
   Contenedor<T> dato = colaAux->desencolar();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    dato.puntero->print();
+    dato.puntero->printCodigo();
   }
   max(root);
 }
@@ -173,7 +180,7 @@ void ArbolBinarioContenedor<T>::max(NodoArbolContenedor<T> *r)
   Cola<Contenedor<T>> *colaAux = r->getCola();
   while(!colaAux->esVacia()){
     Contenedor<T> dato = colaAux->desencolar();
-    dato.puntero->print();
+    dato.puntero->printCodigo();
   }
 
   max(r->getRight());

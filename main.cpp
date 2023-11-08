@@ -17,11 +17,15 @@ using namespace std;
 int i, j, nMin, nMax, *nDeposito, cantArticulosDiferentes = 0, cantArticulos = 0, cantDepositos;
 bool argumento[7] = {false};
 string comandos[5] = {"total_art_dif", "total_art", "min_stock", "stock", "max_stock"};
-Lista<string> nombresBusqueda;
+Lista<string> nombresBusqueda ;
 
 unsigned int hashFuncString(string clave)
 {
-    return (unsigned int)stoi(clave);
+    try{
+        return (unsigned int)stoi(clave);
+    }catch(std::invalid_argument){
+        return 0;
+    }
 }
 
 HashMapL<string, Articulo *> *mapaArticulos = new HashMapL<string, Articulo *>(1024, *hashFuncString);
@@ -42,7 +46,7 @@ int contarColumnasCSV()
     string columna;
     int contadorColumnas = 0;
 
-    while (getline(ss, columna, ','))
+    while (getline(ss, columna, ';'))
     {
         contadorColumnas++;
     }
@@ -54,6 +58,7 @@ int contarColumnasCSV()
 int main(int argc, char *argv[])
 {
     // LECTURA ARGUMENTOS LINEA DE COMANDO
+    /*
     bool check;
     cantDepositos = contarColumnasCSV() - 3;
     nDeposito = new int[cantDepositos];
@@ -69,45 +74,56 @@ int main(int argc, char *argv[])
             argumento[1] = true;
         }
         if (argv[i] == comandos[2])
-        {
-            for (j = 0; j < 5; j++)
-            {
-                if (argv[i + 2] == comandos[j])
-                {
+        {   
+            if(i + 2 >= cantDepositos){
+                argumento[2] = true;
+                nMin = stoi(argv[i + 1]);
+                i++;
+                check = true;
+            }
+            if(!check){
+                for (j = 0; j < 5; j++){
+                    if (argv[i + 2] == comandos[j]){
                     argumento[2] = true;
                     nMin = stoi(argv[i + 1]);
 
                     i++;
                     check = true;
+                    }
                 }
-            }
-            if (!check)
-            {
-                argumento[3] = true;
-                nDeposito[stoi(argv[i + 2]) - 1] = stoi(argv[i + 1]);
+                if (!check)
+                {
+                    argumento[3] = true;
+                    nDeposito[stoi(argv[i + 2]) - 1] = stoi(argv[i + 1]);
 
-                i += 2;
+                    i += 2;
+                }  
             }
         }
         if (argv[i] == comandos[3])
         {
-            for (j = 0; j < 5; j++)
-            {
-                if (argv[i + 2] == comandos[j])
-                {
-                    argumento[4] = true;
+            if(i + 2 >= cantDepositos){
+                argumento[2] = true;
+                nMin = stoi(argv[i + 1]);
+                i++;
+                check = true;
+            }
+            if(!check){
+                for (j = 0; j < 5; j++){
+                    if (argv[i + 2] == comandos[j]){
+                        argumento[4] = true;
+                        nombresBusqueda.insertarUltimo(argv[i + 1]);
+
+                        i++;
+                        check = true;
+                    }
+                }
+                if (!check){
+                    argumento[5] = true;
                     nombresBusqueda.insertarUltimo(argv[i + 1]);
 
-                    i++;
-                    check = true;
-                }
-            }
-            if (!check)
-            {
-                argumento[5] = true;
-                // deposito a buscar
-
-                i += 2;
+                    i += 2;
+                }   
             }
         }
         if (argv[i] == comandos[4])
@@ -116,11 +132,15 @@ int main(int argc, char *argv[])
             nMax = stoi(argv[i + 1]);
         }
     }
+    */
+    argumento[2] = true;
+    nMin = 12;
+
+    cout<<"gola"<<endl;
 
     ifstream archivoCSV("Inventariado Fisico.csv");
     int *deposito = new int[cantDepositos];
 
-    // CREACION: UN ARBOL POR C/ DEPOSITO. NODO INICIAL VALOR N A BUSCAR
     for (i = 0; i < cantDepositos; i++)
     {
         ArbolBinarioContenedor<int> arbolDeposito(nDeposito[i], new Articulo());
@@ -128,7 +148,7 @@ int main(int argc, char *argv[])
     }
 
     int total;
-    char separador = ',';
+    char separador = ';';
     string grupo, codigo, nombreArticulo, linea, *d = new string[cantDepositos];
     bool presente;
 
@@ -147,33 +167,40 @@ int main(int argc, char *argv[])
         for (i = 0; i < cantDepositos; i++)
         {
             getline(stream, d[i], separador);
-            deposito[i] = stoi(d[i]);
+            try{
+                deposito[i] = stoi(d[i]);
+            }catch(std::invalid_argument){
+                deposito[i] = 0;
+            } 
             total += deposito[i];
         }
 
         articuloActual = new Articulo(grupo, codigo, nombreArticulo, deposito, total);
 
-        Lista<HashEntry<string, Articulo *>> listaPrueba;
-        listaPrueba = mapaArticulos->get(codigo);
-        for (i = 0; i < listaPrueba.getTamanio(); i++)
-        {
-            if (listaPrueba.getDato(i).getValor()->getCodigo() == codigo)
-            {
-                presente = true;
+        Lista<HashEntry<string, Articulo *>*>* listaPrueba;
+        try{
+            listaPrueba = mapaArticulos->get(codigo);
+            for (i = 0; i < listaPrueba->getTamanio(); i++){
+                if (listaPrueba->getDato(i)->getValor()->getCodigo() == codigo){
+                    presente = true;
+                }
             }
-        }
-
-        if (!presente)
-        {
+            if (!presente){
+                mapaArticulos->put(codigo, articuloActual);
+                cantArticulos += total;
+                cantArticulosDiferentes ++;
+            }
+        }catch(int e){
             mapaArticulos->put(codigo, articuloActual);
             cantArticulos += total;
             cantArticulosDiferentes ++;
         }
-
-        for (i = 0; i < cantDepositos; i++)
-        {
+        
+        for (i = 0; i < cantDepositos; i++){
             listaArbolesDepositos->getDato(i).put(deposito[i], articuloActual);
         }
+        arbolMinimo->put(total, articuloActual);
+        arbolMaximo->put(total, articuloActual);
     }
 
     archivoCSV.close();
@@ -213,7 +240,7 @@ int main(int argc, char *argv[])
         break;
     case 1:
         for (int i = 0; i < listaArbolesDepositos->getTamanio(); i++)
-            listaArbolesDepositos->getDato(i).print();
+            listaArbolesDepositos->getDato(i).min();
         break;
     }
     switch (argumento[4])
@@ -221,12 +248,12 @@ int main(int argc, char *argv[])
     case 0:
         break;
     case 1:
-        Lista<HashEntry<string, Articulo *>> listaBusqueda;
+        Lista<HashEntry<string, Articulo *>*>* listaBusqueda;
         for (int i = 0; i < nombresBusqueda.getTamanio(); i++){
             listaBusqueda = mapaArticulos->get(nombresBusqueda.getDato(i));
-            for(j = 0; j<listaBusqueda.getTamanio(); j++){
-                if(listaBusqueda.getDato(j).getValor()->getCodigo() == nombresBusqueda.getDato(i)){
-                    listaBusqueda.getDato(j).getValor()->printStock();
+            for(j = 0; j<listaBusqueda->getTamanio(); j++){
+                if(listaBusqueda->getDato(j)->getValor()->getCodigo() == nombresBusqueda.getDato(i)){
+                    listaBusqueda->getDato(j)->getValor()->printStock();
                 }
             }
         }

@@ -55,6 +55,11 @@ public:
     void printCodigo(){
         std::cout<<this->codigo<<endl;
     }
+    void printDeposito(){
+        for (int i = 0; i < sizeof(deposito)-3; i++){
+            std::cout << "STOCK EN DEPOSITO: " << i+1 << ": " << this->deposito[i] << std::endl;
+        }
+    }
 };
 
 template <class T>

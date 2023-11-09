@@ -7,9 +7,9 @@
 - total_art_dif: Muestra la cantidad total de artículos *diferentes*.
 - total_art: Muestra la cantidad total de artículos.
 - min_stock [n]: Muestra todos los artículos que tengan la cantidad n o menor de stock.
-- min_stock [n],[depósito]: Muestra según el depósito, la cantidad de stock que hay en el menor o igual a n.
+- min_stock [n] [depósito]: Muestra según el depósito, la cantidad de stock que hay en el menor o igual a n.
 - stock [nombre_articulo]: Muestra el stock total del artículo ingresado.
-- stock [nombre_articulo],[depósito]: Muestra el stock del artículo ingresado según el depósito.
+- stock [nombre_articulo] [depósito]: Muestra el stock del artículo ingresado según el depósito.
 - max_stock [n]: Muestra todos los artículos que tengan una cantidad mayor o igual a n.
 
 ### MANUAL DE USO
@@ -25,3 +25,9 @@ Y si queremos saber el mínimo de stock (n) según un depósito, entonces tendre
 > Procesador_inventario.exe min_stock 3 5
 
 En este caso estoy pidiendo que me imprima por pantalla la cantidad de stock que sea igual a 3 o menor, en el depósito número 5.
+
+### CONSIDERACIONES
+
+* Se pueden ingresar 2 argumentos o más en una sola ejecución.
+* Los argumentos min_stock [n] y max_stock [n] solo se pueden ingresar una vez por ejecución.
+* El argumento min_stock [n] [deposito] solo se puede ingresar una vez por depósito.

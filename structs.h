@@ -61,9 +61,11 @@ public:
     }
 };
 
+
+
 template <class T>
 struct Contenedor{
-    T info; //cant deposito
+    T info;
     Articulo *puntero;
 };
 

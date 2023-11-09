@@ -70,6 +70,9 @@ int main(int argc, char *argv[])
     bool check;
     for (i = 0; i < argc; i++)
     {
+        // Se compara cada string ingresado por consola con uno de los comandos de comandos[].
+        // Si alguno verifica, se activa el argumento.
+
         check = false;
         if (argv[i] == comandos[0])
         {
@@ -140,6 +143,19 @@ int main(int argc, char *argv[])
             argumento[6] = true;
             nMax = stoi(argv[i + 1]);
         }
+    }
+
+    // Se verifica si por lo menos se activo uno de los posibles comandos.
+
+    check = false;
+    for(i = 0; i < 7; i++){
+        if(argumento[i])
+            check = true;
+    }
+
+    if(!check){
+        cout << "NO SE INGRESO NINGUN ARGUMENTO VALIDO!" << endl;
+        return 0;
     }
 
     //  mapaArticulos es un HashMap que contiene todos los articulos, con su nombre como clave
@@ -243,15 +259,15 @@ int main(int argc, char *argv[])
     //  Se procede a mostrar los argumentos ingresados
     if (argumento[0])
     {
-        cout << "La cantidad total de articulos diferentes es de: " << cantArticulosDiferentes << endl;
+        cout << " > La cantidad total de articulos diferentes es de: " << cantArticulosDiferentes << endl;
     }
     if (argumento[1])
     {
-        cout << "La cantidad total de articulos es de: " << cantArticulos << endl;
+        cout << " > La cantidad total de articulos es de: " << cantArticulos << endl;
     }
     if (argumento[2])
     {
-        cout << "Mostrando codigos de productos con " << nMin << " o menos en stock: " << endl;
+        cout << " > Mostrando codigos de productos con " << nMin << " o menos en stock: " << endl;
         arbolMinimo.min();
         cout << endl;
     }
@@ -259,7 +275,7 @@ int main(int argc, char *argv[])
     {
         for(i = 0; i < cantDepositos; i++){
             if(nDeposito[i] != -1){
-                cout << "Mostrando codigos de productos con " << nDeposito[i] << " o menos en el deposito " << i+1 <<": "<<endl;
+                cout << " > Mostrando codigos de productos con " << nDeposito[i] << " o menos en el deposito " << i+1 <<": "<<endl;
                 listaArbolesDepositos.getDato(i).min();
                 cout << endl;
             }
@@ -299,7 +315,7 @@ int main(int argc, char *argv[])
     }
     if (argumento[6])
     {
-        cout << "Mostrando codigos de productos con " << nMax << " o mas en stock: " << endl
+        cout << " > Mostrando codigos de productos con " << nMax << " o mas en stock: " << endl
              << endl;
         arbolMaximo.max();
         cout << endl;

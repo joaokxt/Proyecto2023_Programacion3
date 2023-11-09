@@ -21,7 +21,7 @@ bool argumento[7] = {false};
 //  comandos es un arreglo de strings que contiene los comandos que se pueden ingresar
 string comandos[5] = {"total_art_dif", "total_art", "min_stock", "stock", "max_stock"};
 
-Lista<string> nombresBusqueda;
+Cola<string> nombresBusqueda;
 Cola<string> colaBusquedaDeposito;
 Cola<int> colaDeposito;
 
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
             if (argc <= i + 2)
             {
                 argumento[4] = true;
-                nombresBusqueda.insertarUltimo(argv[i + 1]);
+                nombresBusqueda.encolar(argv[i + 1]);
             }
             else
             {
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
                     {
                         check = true;
                         argumento[4] = true;
-                        nombresBusqueda.insertarUltimo(argv[i + 1]);
+                        nombresBusqueda.encolar(argv[i + 1]);
                         i++;
                     }
                 }
@@ -208,14 +208,17 @@ int main(int argc, char *argv[])
         getline(stream, codigo, separador);
         getline(stream, nombreArticulo, separador);
         for (i = 0; i < cantDepositos; i++)
-        {
+        {   
+            // Se toma el string del stock en cada depósito.
             getline(stream, d[i], separador);
             try
-            {
+            {   
+                // Se intenta pasar el string a int.
                 deposito[i] = stoi(d[i]);
             }
             catch (std::invalid_argument)
-            {
+            {   
+                // Si el string da error, es una celda vacía. Stock 0.
                 deposito[i] = 0;
             }
             total += deposito[i];
@@ -226,6 +229,7 @@ int main(int argc, char *argv[])
         arbolMinimo.put(total, articuloActual);
         arbolMaximo.put(total, articuloActual);
 
+        // Se verifica si el articuloActual ya está en el Hash, comparando nombre.
         Lista<HashEntry<string, Articulo *> *> *listaPrueba;
         try
         {
@@ -246,6 +250,7 @@ int main(int argc, char *argv[])
         }
         catch (int e)
         {
+            // Si no está, y el espacio asignado por la función está vacío, tira error 404. Se maneja acá.
             mapaArticulos.put(nombreArticulo, articuloActual);
             cantArticulos += total;
             cantArticulosDiferentes++;
@@ -294,9 +299,9 @@ int main(int argc, char *argv[])
     if (argumento[4])
     {
         Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
-        for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
+        while(!nombresBusqueda.esVacia())
         {
-            string nombreBuscar = nombresBusqueda.getDato(i);
+            string nombreBuscar = nombresBusqueda.desencolar();
 
             try
             {

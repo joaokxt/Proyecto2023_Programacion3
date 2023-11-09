@@ -22,39 +22,32 @@ string comandos[5] = {"total_art_dif", "total_art", "min_stock", "stock", "max_s
 Lista<string> nombresBusqueda;
 
 unsigned int hashFuncString(string clave)
-{   
+{
     int x = clave[0], suma = 0, final = clave.size() - 1;
 
-    suma += clave[1] * pow(x,3) + clave[2] * pow(x,2) + clave[3] * x;
-    suma += clave[final] * pow(x,3) + clave[final-1] * pow(x,2) + clave[final-2] * x;
-    
+    suma += clave[1] * pow(x, 3) + clave[2] * pow(x, 2) + clave[3] * x;
+    suma += clave[final] * pow(x, 3) + clave[final - 1] * pow(x, 2) + clave[final - 2] * x;
+
     return suma;
-
 }
-
-//  mapaArticulos es un HashMap que contiene todos los articulos, con su codigo como clave
-HashMapL<string, Articulo *> *mapaArticulos = new HashMapL<string, Articulo *>(1024, *hashFuncString);
-//  listaArbolesDepositos es una lista de arboles, cada uno contiene los articulos de un deposito
-Lista<ArbolBinarioContenedor<int>> *listaArbolesDepositos = new Lista<ArbolBinarioContenedor<int>>();
-//  arbolMinimo es un arbol que contiene los articulos con menor stock
-ArbolBinarioContenedor<int> *arbolMinimo;
-//  arbolMaximo es un arbol que contiene los articulos con mayor stock
-ArbolBinarioContenedor<int> *arbolMaximo;
 
 int contarColumnasCSV()
 {
+    // Se crea objeto asociado al archivo de inventario
     ifstream archivoCSV("Inventariado Fisico.csv");
 
-    const int bufferSize = 4096;
-    char buffer[bufferSize];
+    char buffer[4096];
+    // Se lee la primera linea del CSV (el encabezado)
+    archivoCSV.getline(buffer, 4096);
 
-    archivoCSV.getline(buffer, bufferSize);
-
-    stringstream ss(buffer);
+    // Objeto stringstream con contenido del encabezado
+    // El stringstream permite leer como si fuera un flujo de caracteres
+    stringstream encabezado(buffer);
     string columna;
     int contadorColumnas = 0;
 
-    while (getline(ss, columna, ';'))
+    // Se divide al encabezado en columnas, separadas por ';'
+    while (getline(encabezado, columna, ';'))
     {
         contadorColumnas++;
     }
@@ -65,213 +58,256 @@ int contarColumnasCSV()
 
 int main(int argc, char *argv[])
 {
+    cantDepositos = contarColumnasCSV() - 3;
 
-bool check;
-cantDepositos = contarColumnasCSV() - 3;
-nDeposito = new int[cantDepositos];
-//  Se arman/inicializan los argumentos
-for(i = 0; i<cantDepositos; i++){
-    nDeposito[i] = 0;
-}
-
-for(i = 0; i<argc; i++){
-    check = false;
-    if (argv[i] == comandos[0]){
-        argumento[0] = true;
-    }
-    else if (argv[i] == comandos[1]){
-        argumento[1] = true;
-    }
-    else if (argv[i] == comandos[2]){     
-        if(argc <= i + 2){
-            argumento[2] = true;
-            nMin = stoi(argv[i+1]);       
-        }else{
-            for(j = 0; j<5; j++){
-                if(argv[i+2] == comandos[j]){
-                    check = true;
-                    argumento[2] = true;
-                    nMin = stoi(argv[i+1]); 
-                    i++;
-                }
-            }
-            if(!check){
-                argumento[3] = true;
-                nDeposito[stoi(argv[3])-1] = stoi(argv[i+1]);
-                depos = stoi(argv[3]);
-                i+=2;
-            }
-        }
-    }
-    else if (argv[i] == comandos[3]){ 
-        if(argc <= i + 2){
-            argumento[4] = true;
-            nombresBusqueda.insertarUltimo(argv[i+1]);     
-        }else{
-            for(j = 0; j<5; j++){
-                if(argv[i+2] == comandos[j]){
-                    check = true;
-                    argumento[4] = true;
-                    nombresBusqueda.insertarUltimo(argv[i+1]);  
-                    i++;
-                }
-            }
-            if(!check){
-                argumento[5] = true;
-                nombresBusqueda.insertarUltimo(argv[i+1]);   
-                depos = stoi(argv[i+2]);
-                i+=2;
-            }
-        }       
-    }
-    else if (argv[i] == comandos[4]){
-        argumento[6] = true;
-        nMax = stoi(argv[i+1]);
-    }
-}
-
-arbolMinimo = new ArbolBinarioContenedor<int>(nMin, new Articulo());
-arbolMaximo = new ArbolBinarioContenedor<int>(nMax, new Articulo());
-
-ifstream archivoCSV("Inventariado Fisico.csv");
-int *deposito = new int[cantDepositos];
-
-for (i = 0; i < cantDepositos; i++)
-{
-    ArbolBinarioContenedor<int> arbolDeposito(nDeposito[i], new Articulo());
-    listaArbolesDepositos->insertarUltimo(arbolDeposito);
-}
-
-int total;
-char separador = ';';
-string grupo, codigo, nombreArticulo, linea, *d;
-bool presente;
-
-Articulo *articuloActual;
-
-//  Se lee la primera linea del CSV, que contiene los nombres de los depositos
-getline(archivoCSV, linea);
-//  Se procede a realizar la lectura del CSV
-while (getline(archivoCSV, linea))
-{
-    stringstream stream(linea);
-    deposito = new int[cantDepositos];
-    d = new string[cantDepositos];
-
-    total = 0;
-    presente = false;
-
-    getline(stream, grupo, separador);
-    getline(stream, codigo, separador);
-    getline(stream, nombreArticulo, separador);
+    nDeposito = new int[cantDepositos];
     for (i = 0; i < cantDepositos; i++)
     {
-        getline(stream, d[i], separador);
-        try
-        {
-            deposito[i] = stoi(d[i]);
-        }
-        catch (std::invalid_argument)
-        {
-            deposito[i] = 0;
-        }
-        total += deposito[i];
+        nDeposito[i] = -1;
     }
 
-    articuloActual = new Articulo(grupo, codigo, nombreArticulo, deposito, total);
-
-    arbolMinimo->put(total, articuloActual);
-    arbolMaximo->put(total, articuloActual);
-
-    Lista<HashEntry<string, Articulo *> *> *listaPrueba;
-    try
+    //  Se leen los argumentos ingresados en consola
+    bool check;
+    for (i = 0; i < argc; i++)
     {
-        listaPrueba = mapaArticulos->get(nombreArticulo);
-        for (i = 0; i < listaPrueba->getTamanio(); i++)
+        check = false;
+        if (argv[i] == comandos[0])
         {
-            if (listaPrueba->getDato(i)->getValor()->getNombre() == nombreArticulo)
+            argumento[0] = true;
+        }
+        else if (argv[i] == comandos[1])
+        {
+            argumento[1] = true;
+        }
+        else if (argv[i] == comandos[2])
+        {
+            if (argc <= i + 2)
             {
-                presente = true;
+                argumento[2] = true;
+                nMin = stoi(argv[i + 1]);
+            }
+            else
+            {
+                for (j = 0; j < 5; j++)
+                {
+                    if (argv[i + 2] == comandos[j])
+                    {
+                        check = true;
+                        argumento[2] = true;
+                        nMin = stoi(argv[i + 1]);
+                        i++;
+                    }
+                }
+                if (!check)
+                {
+                    argumento[3] = true;
+                    nDeposito[stoi(argv[i + 2]) - 1] = stoi(argv[i + 1]);
+                    depos = stoi(argv[i + 2]);
+                    i += 2;
+                }
             }
         }
-        if (!presente)
+        else if (argv[i] == comandos[3])
         {
-            mapaArticulos->put(nombreArticulo, articuloActual);
+            if (argc <= i + 2)
+            {
+                argumento[4] = true;
+                nombresBusqueda.insertarUltimo(argv[i + 1]);
+            }
+            else
+            {
+                for (j = 0; j < 5; j++)
+                {
+                    if (argv[i + 2] == comandos[j])
+                    {
+                        check = true;
+                        argumento[4] = true;
+                        nombresBusqueda.insertarUltimo(argv[i + 1]);
+                        i++;
+                    }
+                }
+                if (!check)
+                {
+                    argumento[5] = true;
+                    nombresBusqueda.insertarUltimo(argv[i + 1]);
+                    depos = stoi(argv[i + 2]);
+                    i += 2;
+                }
+            }
+        }
+        else if (argv[i] == comandos[4])
+        {
+            argumento[6] = true;
+            nMax = stoi(argv[i + 1]);
+        }
+    }
+
+    //  mapaArticulos es un HashMap que contiene todos los articulos, con su nombre como clave
+    HashMapL<string, Articulo *> mapaArticulos(1024, *hashFuncString);
+
+    //  listaArbolesDepositos es una lista de arboles, cada uno contiene los articulos de un deposito
+    Lista<ArbolBinarioContenedor<int>> listaArbolesDepositos;
+
+    //  arbolMinimo y arbolMaximo son arboles que contienen en su nodo raíz un objeto articulo nulo asociado con la cantidad n según la que queremos ordenar.
+    ArbolBinarioContenedor<int> arbolMinimo(nMin, new Articulo());
+    ArbolBinarioContenedor<int> arbolMaximo(nMax, new Articulo());
+
+    for (i = 0; i < cantDepositos; i++)
+    {
+        ArbolBinarioContenedor<int> arbolDeposito(nDeposito[i], new Articulo());
+        listaArbolesDepositos.insertarUltimo(arbolDeposito);
+    }
+
+    // Se abre el archivo a leer.
+    ifstream archivoCSV("Inventariado Fisico.csv");
+
+    // Se declaran variables necesarias para guardar datos de objetos.
+    int total, *deposito = new int[cantDepositos];;
+    char separador = ';';
+    string grupo, codigo, nombreArticulo, linea, *d;
+    bool presente;
+    Articulo *articuloActual;
+
+    //  Se lee la primera linea del CSV, que contiene los nombres de los depositos
+    getline(archivoCSV, linea);
+
+    //  Se procede a realizar la lectura del CSV
+    while (getline(archivoCSV, linea))
+    {
+        stringstream stream(linea);
+        deposito = new int[cantDepositos];
+        d = new string[cantDepositos];
+
+        total = 0;
+        presente = false;
+
+        getline(stream, grupo, separador);
+        getline(stream, codigo, separador);
+        getline(stream, nombreArticulo, separador);
+        for (i = 0; i < cantDepositos; i++)
+        {
+            getline(stream, d[i], separador);
+            try
+            {
+                deposito[i] = stoi(d[i]);
+            }
+            catch (std::invalid_argument)
+            {
+                deposito[i] = 0;
+            }
+            total += deposito[i];
+        }
+
+        articuloActual = new Articulo(grupo, codigo, nombreArticulo, deposito, total);
+
+        arbolMinimo.put(total, articuloActual);
+        arbolMaximo.put(total, articuloActual);
+
+        Lista<HashEntry<string, Articulo *> *> *listaPrueba;
+        try
+        {
+            listaPrueba = mapaArticulos.get(nombreArticulo);
+            for (i = 0; i < listaPrueba->getTamanio(); i++)
+            {
+                if (listaPrueba->getDato(i)->getValor()->getNombre() == nombreArticulo)
+                {
+                    presente = true;
+                }
+            }
+            if (!presente)
+            {
+                mapaArticulos.put(nombreArticulo, articuloActual);
+                cantArticulos += total;
+                cantArticulosDiferentes++;
+            }
+        }
+        catch (int e)
+        {
+            mapaArticulos.put(nombreArticulo, articuloActual);
             cantArticulos += total;
             cantArticulosDiferentes++;
         }
-    }
-    catch (int e)
-    {
-        mapaArticulos->put(nombreArticulo, articuloActual);
-        cantArticulos += total;
-        cantArticulosDiferentes++;
-    }
 
-    for (i = 0; i < cantDepositos; i++)
-    {
-        listaArbolesDepositos->getDato(i).put(deposito[i], articuloActual);
-    }
-}
-archivoCSV.close();
-
-clock_t begin;
-std::cout << "Comenzando a medir Tiempo\n" << endl;
-begin = clock();
-
-//  Se procede a mostrar los argumentos ingresados
-if(argumento[0]){
-    cout << "La cantidad total de articulos diferentes es de: " << cantArticulosDiferentes << endl;
-}
-if(argumento[1]){
-    cout << "La cantidad total de articulos es de: " << cantArticulos << endl;
-}
-if(argumento[2]){
-    cout<<"Mostrando codigos de productos con "<<nMin<<" o menos en stock: "<<endl;
-    arbolMinimo->min();
-    cout<<endl;
-}
-if(argumento[3]){
-    listaArbolesDepositos->getDato(depos-1).min();
-}
-if(argumento[4]){
-    Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
-    for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
-    {   
-        listaBusqueda = mapaArticulos->get(nombresBusqueda.getDato(i));
-        string nombreBuscar = nombresBusqueda.getDato(i);
-        
-        for (j = 0; j < listaBusqueda->getTamanio(); j++)
+        for (i = 0; i < cantDepositos; i++)
         {
-            if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombreBuscar)
-            {
-                listaBusqueda->getDato(j)->getValor()->printStock();
+            listaArbolesDepositos.getDato(i).put(deposito[i], articuloActual);
+        }
+    }
+    archivoCSV.close();
+
+    clock_t begin;
+    std::cout << "Comenzando a medir Tiempo\n"
+              << endl;
+    begin = clock();
+
+    //  Se procede a mostrar los argumentos ingresados
+    if (argumento[0])
+    {
+        cout << "La cantidad total de articulos diferentes es de: " << cantArticulosDiferentes << endl;
+    }
+    if (argumento[1])
+    {
+        cout << "La cantidad total de articulos es de: " << cantArticulos << endl;
+    }
+    if (argumento[2])
+    {
+        cout << "Mostrando codigos de productos con " << nMin << " o menos en stock: " << endl;
+        arbolMinimo.min();
+        cout << endl;
+    }
+    if (argumento[3])
+    {
+        for(i = 0; i < cantDepositos; i++){
+            if(nDeposito[i] != -1){
+                cout << "Mostrando codigos de productos con " << nDeposito[i] << " o menos en el deposito " << i+1 <<": "<<endl;
+                listaArbolesDepositos.getDato(i).min();
+                cout << endl;
             }
         }
     }
-}
-if(argumento[5]){
-    Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
-    for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
+    if (argumento[4])
     {
-        listaBusqueda = mapaArticulos->get(nombresBusqueda.getDato(i));
-        for (j = 0; j < listaBusqueda->getTamanio(); j++)
+        Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
+        for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
         {
-            if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombresBusqueda.getDato(i))
+            listaBusqueda = mapaArticulos.get(nombresBusqueda.getDato(i));
+            string nombreBuscar = nombresBusqueda.getDato(i);
+
+            for (j = 0; j < listaBusqueda->getTamanio(); j++)
             {
-                listaBusqueda->getDato(j)->getValor()->printDeposito(depos);
+                if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombreBuscar)
+                {
+                    listaBusqueda->getDato(j)->getValor()->printStock();
+                }
             }
         }
     }
-}
-if(argumento[6]){
-    cout<<"Mostrando codigos de productos con "<<nMax<<" o mas en stock: "<<endl<<endl;
-    arbolMaximo->max();
-    cout<<endl;
-}
+    if (argumento[5])
+    {
+        Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
+        for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
+        {
+            listaBusqueda = mapaArticulos.get(nombresBusqueda.getDato(i));
+            for (j = 0; j < listaBusqueda->getTamanio(); j++)
+            {
+                if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombresBusqueda.getDato(i))
+                {
+                    listaBusqueda->getDato(j)->getValor()->printDeposito(depos);
+                }
+            }
+        }
+    }
+    if (argumento[6])
+    {
+        cout << "Mostrando codigos de productos con " << nMax << " o mas en stock: " << endl
+             << endl;
+        arbolMaximo.max();
+        cout << endl;
+    }
 
-clock_t end = clock();
-double elapsed_secs = static_cast<double>(end - begin) / CLOCKS_PER_SEC;
-cout << endl;
-cout << "Tardo elapsed_secs " << elapsed_secs << "\n" << std::endl;
+    clock_t end = clock();
+    double elapsed_secs = static_cast<double>(end - begin) / CLOCKS_PER_SEC;
+    cout << endl;
+    cout << "Tardo elapsed_secs " << elapsed_secs << "\n"
+         << std::endl;
 }

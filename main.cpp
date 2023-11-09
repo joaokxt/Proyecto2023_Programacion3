@@ -10,6 +10,7 @@
 #include "Lista/Lista.h"
 #include "Arbol/ArbolBinarioAVL.h"
 #include "Arbol/ArbolBinarioContenedor.h"
+#include "Cola/Cola.h"
 #include "structs.h"
 
 using namespace std;
@@ -19,7 +20,10 @@ int i, j, nMin, nMax, *nDeposito, cantArticulosDiferentes = 0, cantArticulos = 0
 bool argumento[7] = {false};
 //  comandos es un arreglo de strings que contiene los comandos que se pueden ingresar
 string comandos[5] = {"total_art_dif", "total_art", "min_stock", "stock", "max_stock"};
+
 Lista<string> nombresBusqueda;
+Cola<string> colaBusquedaDeposito;
+Cola<int> colaDeposito;
 
 unsigned int hashFuncString(string clave)
 {
@@ -132,8 +136,8 @@ int main(int argc, char *argv[])
                 if (!check)
                 {
                     argumento[5] = true;
-                    nombresBusqueda.insertarUltimo(argv[i + 1]);
-                    depos = stoi(argv[i + 2]);
+                    colaBusquedaDeposito.encolar(argv[i + 1]);
+                    colaDeposito.encolar(stoi(argv[i + 2]));
                     i += 2;
                 }
             }
@@ -148,12 +152,14 @@ int main(int argc, char *argv[])
     // Se verifica si por lo menos se activo uno de los posibles comandos.
 
     check = false;
-    for(i = 0; i < 7; i++){
-        if(argumento[i])
+    for (i = 0; i < 7; i++)
+    {
+        if (argumento[i])
             check = true;
     }
 
-    if(!check){
+    if (!check)
+    {
         cout << "NO SE INGRESO NINGUN ARGUMENTO VALIDO!" << endl;
         return 0;
     }
@@ -178,7 +184,8 @@ int main(int argc, char *argv[])
     ifstream archivoCSV("Inventariado Fisico.csv");
 
     // Se declaran variables necesarias para guardar datos de objetos.
-    int total, *deposito = new int[cantDepositos];;
+    int total, *deposito = new int[cantDepositos];
+    ;
     char separador = ';';
     string grupo, codigo, nombreArticulo, linea, *d;
     bool presente;
@@ -246,7 +253,8 @@ int main(int argc, char *argv[])
 
         for (i = 0; i < cantDepositos; i++)
         {
-            listaArbolesDepositos.getDato(i).put(deposito[i], articuloActual);
+            if(nDeposito[i] != -1)
+                listaArbolesDepositos.getDato(i).put(deposito[i], articuloActual);
         }
     }
     archivoCSV.close();
@@ -273,9 +281,11 @@ int main(int argc, char *argv[])
     }
     if (argumento[3])
     {
-        for(i = 0; i < cantDepositos; i++){
-            if(nDeposito[i] != -1){
-                cout << " > Mostrando codigos de productos con " << nDeposito[i] << " o menos en el deposito " << i+1 <<": "<<endl;
+        for (i = 0; i < cantDepositos; i++)
+        {
+            if (nDeposito[i] != -1)
+            {
+                cout << " > Mostrando codigos de productos con " << nDeposito[i] << " o menos en el deposito " << i + 1 << ": " << endl;
                 listaArbolesDepositos.getDato(i).min();
                 cout << endl;
             }
@@ -286,14 +296,25 @@ int main(int argc, char *argv[])
         Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
         for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
         {
-            listaBusqueda = mapaArticulos.get(nombresBusqueda.getDato(i));
             string nombreBuscar = nombresBusqueda.getDato(i);
 
-            for (j = 0; j < listaBusqueda->getTamanio(); j++)
+            try
             {
-                if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombreBuscar)
+                listaBusqueda = mapaArticulos.get(nombreBuscar);
+
+                for (j = 0; j < listaBusqueda->getTamanio(); j++)
                 {
-                    listaBusqueda->getDato(j)->getValor()->printStock();
+                    if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombreBuscar)
+                    {
+                        listaBusqueda->getDato(j)->getValor()->printStock();
+                    }
+                }
+            }
+            catch (int e)
+            {
+                if (e == 404)
+                {
+                    cout << "ARTICULO [" << nombreBuscar << "] NO ENCONTRADO!" << endl;
                 }
             }
         }
@@ -301,14 +322,27 @@ int main(int argc, char *argv[])
     if (argumento[5])
     {
         Lista<HashEntry<string, Articulo *> *> *listaBusqueda;
-        for (int i = 0; i < nombresBusqueda.getTamanio(); i++)
+        while (!colaBusquedaDeposito.esVacia())
         {
-            listaBusqueda = mapaArticulos.get(nombresBusqueda.getDato(i));
-            for (j = 0; j < listaBusqueda->getTamanio(); j++)
+            string nombreBuscar = colaBusquedaDeposito.desencolar();
+            int depositoBuscar = colaDeposito.desencolar();
+
+            try
             {
-                if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombresBusqueda.getDato(i))
+                listaBusqueda = mapaArticulos.get(nombreBuscar);
+                for (j = 0; j < listaBusqueda->getTamanio(); j++)
                 {
-                    listaBusqueda->getDato(j)->getValor()->printDeposito(depos);
+                    if (listaBusqueda->getDato(j)->getValor()->getNombre() == nombreBuscar)
+                    {
+                        listaBusqueda->getDato(j)->getValor()->printDeposito(depositoBuscar);
+                    }
+                }
+            }
+            catch (int e)
+            {
+                if (e == 404)
+                {
+                    cout << "ARTICULO [" << nombreBuscar << "] NO ENCONTRADO!" << endl;
                 }
             }
         }

@@ -49,6 +49,7 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "list": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "cstdarg": "cpp"
     }
 }

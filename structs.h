@@ -56,6 +56,9 @@ public:
     void printCodigo(){
         std::cout<<this->codigo<<endl;
     }
+    void printNombre(){
+        std::cout<<this->nombreArticulo<<endl;
+    }
     void printDeposito(int numDeposito){
         std::cout<<"STOCK EN DEPOSITO ["<<numDeposito<<"]  DE ["<<this->nombreArticulo<<"]: "<<this->deposito[numDeposito-1]<<std::endl;
     }

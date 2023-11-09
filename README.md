@@ -26,6 +26,10 @@ Y si queremos saber el mínimo de stock (n) según un depósito, entonces tendre
 
 En este caso estoy pidiendo que me imprima por pantalla la cantidad de stock que sea igual a 3 o menor, en el depósito número 5.
 
+* IMPORTANTE: Para ingresar nombres de artículos se lo tienen que ingresar entre comillas. 
+
+> Procesador_inventario.exe stock "ANAFE VITROCERAMICO VITRO COOK 4" 5
+
 ### CONSIDERACIONES
 
 * Se pueden ingresar 2 argumentos o más en una sola ejecución.

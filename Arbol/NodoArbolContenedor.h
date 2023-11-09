@@ -29,7 +29,7 @@ public:
     right = nullptr;
   }
 
-  Cola<Contenedor<T>>* getCola() const
+  Cola<Contenedor<T>> *getCola() const
   {
     return cola;
   }
@@ -57,7 +57,6 @@ public:
   {
     this->left = l;
   }
-
 };
 
 #endif // U05_ARBOL_ARBOL_NODOARBOL_H_

@@ -4,11 +4,12 @@
 #include "HashEntry.h"
 #include "../Lista/Lista.h"
 
-//Tabla hash con manejo de colisiones usando listas enlazadas
+// Tabla hash con manejo de colisiones usando listas enlazadas
 template <class K, class T>
-class HashMapL {
+class HashMapL
+{
 private:
-    Lista<HashEntry<K, T>*> **tabla;
+    Lista<HashEntry<K, T> *> **tabla;
 
     unsigned int tamanio;
 
@@ -21,7 +22,7 @@ public:
 
     HashMapL(unsigned int k, unsigned int (*hashFuncP)(K clave));
 
-    Lista<HashEntry<K,T>*>* get(K clave);
+    Lista<HashEntry<K, T> *> *get(K clave);
 
     void put(K clave, T valor);
 
@@ -35,66 +36,78 @@ public:
 };
 
 /**
-* Constructor de la clase HashMapL
-* @tparam K Clave
-* @tparam T Valor
-*/
+ * Constructor de la clase HashMapL
+ * @tparam K Clave
+ * @tparam T Valor
+ */
 template <class K, class T>
-HashMapL<K, T>::HashMapL(unsigned int k) {
+HashMapL<K, T>::HashMapL(unsigned int k)
+{
     tamanio = k;
-    tabla = new Lista<HashEntry<K, T>*> *[tamanio];
-    for(int i = 0; i < tamanio; i++) {
+    tabla = new Lista<HashEntry<K, T> *> *[tamanio];
+    for (int i = 0; i < tamanio; i++)
+    {
         tabla[i] = NULL;
     }
     hashFuncP = hashFunc;
 }
 template <class K, class T>
-HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K)) {
+HashMapL<K, T>::HashMapL(unsigned int k, unsigned int (*fp)(K))
+{
     tamanio = k;
-    tabla = new Lista<HashEntry<K, T>*> *[tamanio];
-    for(int i = 0; i < tamanio; i++) {
+    tabla = new Lista<HashEntry<K, T> *> *[tamanio];
+    for (int i = 0; i < tamanio; i++)
+    {
         tabla[i] = NULL;
     }
     hashFuncP = fp;
 }
 
 /**
-* Destructor de la clase HashMapL
-* @tparam K Clave
-* @tparam T Valor
-*/
+ * Destructor de la clase HashMapL
+ * @tparam K Clave
+ * @tparam T Valor
+ */
 template <class K, class T>
-HashMapL<K, T>::~HashMapL() {
-    for(int i = 0; i < tamanio; i++) {
-        if(tabla[i] != NULL) {
+HashMapL<K, T>::~HashMapL()
+{
+    for (int i = 0; i < tamanio; i++)
+    {
+        if (tabla[i] != NULL)
+        {
             delete tabla[i];
         }
     }
 }
 /**
-* Método para introducir un elemento en el HashMapL
-* @tparam K Clave
-* @tparam T Valor
-*/
+ * Método para introducir un elemento en el HashMapL
+ * @tparam K Clave
+ * @tparam T Valor
+ */
 template <class K, class T>
-void HashMapL<K, T>::put(K clave, T valor) {
+void HashMapL<K, T>::put(K clave, T valor)
+{
     unsigned int pos = hashFuncP(clave) % tamanio;
 
-    if(tabla[pos] == NULL) {
-        tabla[pos] = new Lista<HashEntry<K, T>*>();
+    if (tabla[pos] == NULL)
+    {
+        tabla[pos] = new Lista<HashEntry<K, T> *>();
     }
     tabla[pos]->insertarUltimo(new HashEntry<K, T>(clave, valor));
 }
 
 /**
-* Método para saber si está vacío o no
-* @tparam K Clave
-* @tparam T Valor
-*/
+ * Método para saber si está vacío o no
+ * @tparam K Clave
+ * @tparam T Valor
+ */
 template <class K, class T>
-bool HashMapL<K, T>::esVacio() {
-    for(int i = 0; i < tamanio; i++) {
-        if(tabla[i] != NULL) {
+bool HashMapL<K, T>::esVacio()
+{
+    for (int i = 0; i < tamanio; i++)
+    {
+        if (tabla[i] != NULL)
+        {
             return false;
         }
     }
@@ -102,32 +115,27 @@ bool HashMapL<K, T>::esVacio() {
 }
 
 template <class K, class T>
-unsigned int HashMapL<K, T>::hashFunc(K clave) {
-    return (unsigned int) clave;
+unsigned int HashMapL<K, T>::hashFunc(K clave)
+{
+    return (unsigned int)clave;
 }
 
 /**
-*Método que devuelve la lista según la clave que recibe
-* @tparam K Clave
-* @tparam T Valor
-*/
+ *Método que devuelve la lista según la clave que recibe
+ * @tparam K Clave
+ * @tparam T Valor
+ */
 template <class K, class T>
-Lista<HashEntry<K, T>*>* HashMapL<K, T>::get(K clave) {
+Lista<HashEntry<K, T> *> *HashMapL<K, T>::get(K clave)
+{
     unsigned int pos = hashFuncP(clave) % tamanio;
 
-    if(tabla[pos] == NULL) {
+    if (tabla[pos] == NULL)
+    {
         throw 404;
     }
 
     return tabla[pos];
-
-    /*
-    Nodo<HashEntry<K, T>> *aux = tabla[pos]->getInicio();
-
-    while (aux != NULL) {
-        std::cout << aux->getDato().getValor() << std::endl;
-        aux = aux->getSiguiente();
-    }*/
 }
 
 #endif // U05_HASH_HASHMAP_HASHMAPLIST_H_

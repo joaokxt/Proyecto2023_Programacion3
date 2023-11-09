@@ -14,6 +14,10 @@
 
 ### MANUAL DE USO
 
+Primero, se compila el programa con el siguiente comando en consola:
+
+> g++ -o Procesador_inventario.exe main.cpp .\HashMap\HashEntry.h .\HashMap\HashLista.h .\Lista\Lista.h .\Lista\nodo.h .\Cola\Cola.h .\Cola\nodo.h .\Arbol\ArbolBinarioContenedor.h .\Arbol\NodoArbolContenedor.h .\structs.h
+
 Para usar el programa hay que, mediante consola, escribir el archivo .exe del programa (Procesador_invetario.exe) y posteriormente el argumento que querramos.
 
 **Ejemplo**: Si queremos saber la cantidad total de artículos diferentes del negocio, deberemos de introducir lo siguiente en la terminal y posteriormente ejecutarlo.
